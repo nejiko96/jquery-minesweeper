@@ -1,0 +1,40 @@
+<style type="text/css">
+#stat span {
+	display: inline-block;
+	height: 3px;
+	width: 0px;
+	background-color: skyblue;
+	border: 1px solid cornflowerblue;
+}
+</style>
+
+<div id="stat"></div>
+
+
+var idx;
+var html = '';
+for (idx = 0; idx < this._cells; idx++) {
+	html += '<span></span><br />';
+}
+$("#stat").html(html);
+
+
+
+$.minesweeper.debug = {};
+
+
+
+
+if ($.minesweeper.debug[pos]) {
+	$.minesweeper.debug[pos]++;
+} else {
+	$.minesweeper.debug[pos] = 1;
+}
+
+
+$.minesweeper.debug[pos]--;
+
+
+$("#stat>span").each(function(i) {
+	$(this).css("width", ($.minesweeper.debug[i] * 3) + "px");
+});

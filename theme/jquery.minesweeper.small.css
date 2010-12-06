@@ -1,0 +1,60 @@
+.minesweeper-mines, .minesweeper-timer {
+	display: inline-block;
+	width: 40px;
+	text-align: right;
+	background-color: whitesmoke;
+	border: 1px solid lightgrey;
+	padding-right: 2px;
+}
+.minesweeper-cells span {
+	width: 16px;
+	height: 16px;
+	display: inline-block;
+	overflow: hidden;
+}
+.minesweeper-state0f {
+	background-image: url('image/0f_16x16.png');
+}
+.minesweeper-state0h {
+	background-image: url('image/0h_16x16.png');
+}
+.minesweeper-state01 {
+	background-image: url('image/01_16x16.png');
+}
+.minesweeper-state10 {
+	background-image: url('image/10_16x16.png');
+}
+.minesweeper-state11 {
+	background-image: url('image/11_16x16.png');
+}
+.minesweeper-state12 {
+	background-image: url('image/12_16x16.png');
+}
+.minesweeper-state13 {
+	background-image: url('image/13_16x16.png');
+}
+.minesweeper-state14 {
+	background-image: url('image/14_16x16.png');
+}
+.minesweeper-state15 {
+	background-image: url('image/15_16x16.png');
+}
+.minesweeper-state16 {
+	background-image: url('image/16_16x16.png');
+}
+.minesweeper-state17 {
+	background-image: url('image/17_16x16.png');
+}
+.minesweeper-state18 {
+	background-image: url('image/18_16x16.png');
+}
+.minesweeper-state19 {
+	background-image: url('image/19_16x16.png');
+}
+.minesweeper-state1a {
+	background-image: url('image/1a_16x16.png');
+}
+.minesweeper-state1b {
+	background-image: url('image/1b_16x16.png');
+}
+
