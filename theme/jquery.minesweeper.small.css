@@ -9,52 +9,24 @@
 .minesweeper-cells span {
 	width: 16px;
 	height: 16px;
+	background-image: url('image/green_16x16.png');
 	display: inline-block;
 	overflow: hidden;
 }
-.minesweeper-state0f {
-	background-image: url('image/0f_16x16.png');
-}
-.minesweeper-state0h {
-	background-image: url('image/0h_16x16.png');
-}
-.minesweeper-state01 {
-	background-image: url('image/01_16x16.png');
-}
-.minesweeper-state10 {
-	background-image: url('image/10_16x16.png');
-}
-.minesweeper-state11 {
-	background-image: url('image/11_16x16.png');
-}
-.minesweeper-state12 {
-	background-image: url('image/12_16x16.png');
-}
-.minesweeper-state13 {
-	background-image: url('image/13_16x16.png');
-}
-.minesweeper-state14 {
-	background-image: url('image/14_16x16.png');
-}
-.minesweeper-state15 {
-	background-image: url('image/15_16x16.png');
-}
-.minesweeper-state16 {
-	background-image: url('image/16_16x16.png');
-}
-.minesweeper-state17 {
-	background-image: url('image/17_16x16.png');
-}
-.minesweeper-state18 {
-	background-image: url('image/18_16x16.png');
-}
-.minesweeper-state19 {
-	background-image: url('image/19_16x16.png');
-}
-.minesweeper-state1a {
-	background-image: url('image/1a_16x16.png');
-}
-.minesweeper-state1b {
-	background-image: url('image/1b_16x16.png');
-}
+
+.minesweeper-state01 { background-position: 0 0; }
+.minesweeper-state0f { background-position: -16px 0; }
+.minesweeper-state0h { background-position: -32px 0; }
+.minesweeper-state10 { background-position: 0 -16px; }
+.minesweeper-state11 { background-position: -16px -16px; }
+.minesweeper-state12 { background-position: -32px -16px; }
+.minesweeper-state13 { background-position: 0 -32px; }
+.minesweeper-state14 { background-position: -16px -32px; }
+.minesweeper-state15 { background-position: -32px -32px; }
+.minesweeper-state16 { background-position: 0 -48px; }
+.minesweeper-state17 { background-position: -16px -48px; }
+.minesweeper-state18 { background-position: -32px -48px; }
+.minesweeper-state19 { background-position: 0 -64px; }
+.minesweeper-state1a { background-position: -16px -64px; }
+.minesweeper-state1b { background-position: -32px -64px; }
 
