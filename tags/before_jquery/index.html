@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+<!-- 
+  $Id: index.html,v 1.2 2005/11/12 13:07:35 ikaruga Exp $
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja">
+
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=Shift_JIS" />
+  <title>マインスイーパー</title>
+  <link rel="stylesheet" href="skin/pukiwiki.css.php.append.css" type="text/css" media="screen" charset="Shift_JIS" />
+</head>
+
+<body>
+  <script type="text/javascript" src="../JSutility/debug.js" ></script>
+  <script type="text/javascript" src="../JSutility/prototype.js" ></script>
+  <script type="text/javascript" src="../JSutility/profiler.js" ></script>
+  <form>
+  <input type="button" value="プロファイル開始" onclick="startProfile()" />
+  <input type="button" value="プロファイル終了" onclick="stopProfile()" />
+  </form>
+  <script type="text/javascript" >
+<!--
+
+var p1;
+var p2;
+
+function startProfile() {
+	p1 = new Profiler;
+	p1.observe(IKARUGA.MineSweeper.prototype, "IKARUGA.MineSweeper");
+	p2 = new Profiler;
+	p2.observe(IKARUGA.MineSweeper.Board.prototype, "IKARUGA.MineSweeper.Board");
+}
+function stopProfile() {
+	debugPrintLn(p1.result().join("\n"));
+	debugPrintLn(p2.result().join("\n"));
+}
+// -->
+  </script>
+
+  <script type="text/javascript" src="skin/disableContextMenu.js" ></script>
+  <script type="text/javascript" src="skin/minesweeper.js" ></script>
+  <script type="text/javascript" >
+
+<!--
+
+	IKARUGA.MineSweeper.setImagePath("./image/minesweeper/");
+
+	new IKARUGA.MineSweeper("1").init(30, 30, 100);
+	new IKARUGA.MineSweeper("2").init(0, 0, 0);
+	
+// -->
+  </script>
+
+
+</body>
+
+</html>
