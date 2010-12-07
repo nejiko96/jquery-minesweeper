@@ -1,7 +1,7 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Localization Test</title>
+	<title>Ajax Localization Test</title>
 	<link type="text/css" href="../theme/jquery.minesweeper.css" rel="stylesheet" charset="UTF-8" />
 	<script type="text/javascript" src="../lib/jquery-1.4.4.min.js" ></script>
 	<script type="text/javascript" src="../src/jquery.minesweeper.js" ></script>
@@ -11,6 +11,7 @@
 			function(data, status) {
 				alert(status);
 				alert(data);
+				eval(data);
 			}
 		);
 		$("#minesweeper1").minesweeper();
