@@ -17,8 +17,8 @@
   author_quote="__MSG_author_quote__"
 >
   <Require feature="dynamic-height"/>
-  <Locale messages="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/resources/ALL_ALL.xml" />
-  <Locale lang="ja" messages="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/resources/ja_ALL.xml" />
+  <Locale messages="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/i18n/ALL_ALL.xml" />
+  <Locale lang="ja" messages="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/i18n/ja_ALL.xml" />
 </ModulePrefs>
 <UserPref name="level" display_name="__MSG_pref_name_level__" default_value="easy" datatype="enum">
   <EnumValue value="easy" display_value="__MSG_pref_level_easy__" />
