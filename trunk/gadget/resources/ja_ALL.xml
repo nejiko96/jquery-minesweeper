@@ -9,4 +9,5 @@
   <msg name="pref_level_easy">初級 (9x9)</msg> 
   <msg name="pref_level_medium">中級 (16x16)</msg> 
   <msg name="pref_level_hard">上級 (30x16)</msg> 
+  <msg name="lang">ja</msg> 
 </messagebundle>

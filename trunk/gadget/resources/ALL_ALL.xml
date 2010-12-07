@@ -9,4 +9,5 @@
   <msg name="pref_level_easy">Easy (9x9)</msg> 
   <msg name="pref_level_medium">Medium (16x16)</msg> 
   <msg name="pref_level_hard">Hard (30x16)</msg> 
+  <msg name="lang"></msg> 
 </messagebundle>
