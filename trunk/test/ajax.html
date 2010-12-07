@@ -8,10 +8,10 @@
 	<script type="text/javascript" >
 	$(function() {
 		$.getScript("../src/i18n/jquery.minesweeper-ja.js",
+			{ async: false },
 			function(data, status) {
 				alert(status);
 				alert(data);
-				eval(data);
 			}
 		);
 		$("#minesweeper1").minesweeper();
