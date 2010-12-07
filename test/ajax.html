@@ -8,13 +8,12 @@
 	<script type="text/javascript" >
 	$(function() {
 		$.getScript("../src/i18n/jquery.minesweeper-ja.js",
-			{ async: false },
 			function(data, status) {
 				alert(status);
 				alert(data);
+				$("#minesweeper1").minesweeper();
 			}
 		);
-		$("#minesweeper1").minesweeper();
 	});
 	</script>
 </head>
