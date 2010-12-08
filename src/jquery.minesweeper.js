@@ -480,52 +480,52 @@
 				$.extend(this._settings, MineSweeper._DEFAULT_LEVELS[this._settings.level] || {});
 				
 				// 幅を初期化する
-				if (this._settings.width === undefined) {
-					this._width = MineSweeper._WIDTH_MIN;
-				} else {
-					this._width = this._settings.width;
+				this._width = parseInt(this._settings.width, 10);
+				if (isFinite(this._width)) {
 					if (this._width < MineSweeper._WIDTH_MIN) {
 						this._width = MineSweeper._WIDTH_MIN;
 					}
 					if (this._width > MineSweeper._WIDTH_MAX) {
 						this._width = MineSweeper._WIDTH_MAX;
 					}
+				} else {
+					this._width = MineSweeper._WIDTH_MIN;
 				}
 				
 				// 高さを初期化する
-				if (this._settings.height === undefined) {
-					this._height = MineSweeper._HEIGHT_MIN;
-				} else {
-					this._height = this._settings.height;
+				this._height = parseInt(this._settings.height, 10);
+				if (isFinite(this._height)) {
 					if (this._height < MineSweeper._HEIGHT_MIN) {
 						this._height = MineSweeper._HEIGHT_MIN;
 					}
 					if (this._height > MineSweeper._HEIGHT_MAX) {
 						this._height = MineSweeper._HEIGHT_MAX;
 					}
+				} else {
+					this._height = MineSweeper._HEIGHT_MIN;
 				}
 				
 				// マス数を初期化する
 				this._cells = this._width * this._height;
 				
 				// 地雷数を初期化する
-				if (this._settings.mines === undefined) {
-					// 未設定の場合、盤面のサイズに応じて設定する
-					this._mines = this._cells * ( 0.1 + 0.05 * Math.floor(this._cells / 200));
-					this._mines = Math.ceil(this._mines / 10) * 10;
-				} else {
-					this._mines = this._settings.mines;
+				this._mines = parseInt(this._settings.mines, 10);
+				if (isFinite(this._mines)) {
 					if (this._mines < MineSweeper._MINES_MIN) {
 						this._mines = MineSweeper._MINES_MIN;
 					}
 					// 最大地雷数を盤面のサイズから計算する
 					// 従来は（幅－１）×（高さ－１）だったが、
 					// Windows7は幅×高さ×0.94-8.45（小数点以下切捨て）
-					// var maxBoms = (this._width - 1) * (this._height -1);
-					var maxBoms = Math.floor(this._width * this._height * 0.94 - 8.45);
-					if (this._mines > maxBoms) {
-						this._mines = maxBoms;
+					// var maxMines = (this._width - 1) * (this._height -1);
+					var maxMines = Math.floor(this._width * this._height * 0.94 - 8.45);
+					if (this._mines > maxMines) {
+						this._mines = maxMines;
 					}
+				} else {
+					// 未設定の場合、盤面のサイズに応じて設定する
+					var percent = 10 + Math.floor(this._cells / 45)
+					this._mines = Math.round(this._cells * percent / 1000) * 10;
 				}
 			},
 			// HTML生成処理
