@@ -1,9 +1,9 @@
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>jQuery minesweeper</title>
+	<title>jQuery minesweeper Demo</title>
 	<link type="text/css" href="../theme/jquery.minesweeper.css" rel="stylesheet" media="screen" charset="UTF-8" />
-	<script type="text/javascript" src="../lib/jquery-1.4.4.min.js" ></script>
+	<script type="text/javascript" src="../lib/jquery-1.4.4.js" ></script>
 	<script type="text/javascript" src="../lib/jquery.blockUI.js" ></script>
 	<script type="text/javascript" src="../lib/jquery.timers-1.2.js" ></script>
 	<script type="text/javascript" src="../src/jquery.minesweeper.js" ></script>
@@ -18,9 +18,9 @@
 		$("#btnCustom").click(function() {
 			$("#minesweeper5").minesweeper({
 				level: "custom",
-				width: $("#txtWidth").val() - 0,
-				height: $("#txtHeight").val() - 0,
-				mines: $("#txtMines").val() - 0
+				width: $("#txtWidth").val(),
+				height: $("#txtHeight").val(),
+				mines: $("#txtMines").val()
 			});
 		});
 	});
