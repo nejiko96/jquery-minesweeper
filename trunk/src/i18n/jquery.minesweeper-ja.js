@@ -9,4 +9,3 @@
 	};
 	$.extend($.minesweeper.defaults, $.minesweeper.regional['ja']);
 })(jQuery);
-
