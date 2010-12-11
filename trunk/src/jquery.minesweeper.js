@@ -1,16 +1,21 @@
 /*!
  * jQuery minesweeper plugin
- * Version 1.00 (2010.12.02)
+ * Version @VERSION (@DATE)
  * @requires jQuery v1.4.4 or later
+ * @requires jQuery.blockUI (optional)
+ * @requires jQuery.timers (optional)
  *
  * Copyright (c) 2010 H.Nakatani
  * licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
-
+ 
 (function($) {
 
-	// リスナクラス－盤面のマウスイベントをクリックイベントに変換する
+	/**
+	 * リスナクラス－盤面のマウスイベントをクリックイベントに変換する
+	 * @constructor
+	 */
 	var Listener = function(settings) {
 		this._init(settings);
 	};
@@ -111,7 +116,10 @@
 		}
 	);
 
-	// マインスイーパ盤面クラス
+	/**
+	 * マインスイーパ盤面クラス
+	 * @constructor
+	 */
 	var Board = function(target) {
 		this._init(target);
 	};
@@ -266,7 +274,10 @@
 		}
 	);
 
-	// 地雷位置クラス
+	/**
+	 * 地雷位置クラス
+	 * @constructor
+	 */
 	var MineLocation = function(cells, mines, startIdx) {
 		this._init(cells, mines, startIdx);
 	};
@@ -353,14 +364,20 @@
 		}
 	);
 	
-	// ２次元ベクトルクラス
+	/**
+	 * ２次元ベクトルクラス
+	 * @constructor
+	 */
 	var Vector2D = function(x, y) {
 		this._x = x;
 		this._y = y;
 	};
 	
 	
-	// マインスイーパクラス
+	/**
+	 * マインスイーパクラス
+	 * @constructor
+	 */
 	var MineSweeper = function(target, settings) {
 		this._init(target, settings);
 	};
