@@ -144,7 +144,7 @@
 		<copy todir="${dist.dir}/headers/">
 			<fileset dir="${dist.dir}/src/" includes="*.js" />
 		</copy>
-		<replaceregexp match="^(\/\*.*?\*\/\s).+" replace="\1" flags="s">
+		<replaceregexp match="^(\/\*.*?\*\/\s).+" replace="\1" flags="s" encoding="UTF-8" >
 		    <fileset dir="${dist.dir}/headers/" includes="*.js"/>
 		</replaceregexp>
 		<for param="file">
