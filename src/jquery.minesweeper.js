@@ -1,6 +1,7 @@
-/*!
+/**
  * jQuery minesweeper plugin
- * Version @VERSION (@DATE)
+ * Version: @VERSION
+ * Date: @DATE
  * @requires jQuery v1.4.4 or later
  * @requires jQuery.blockUI (optional)
  * @requires jQuery.timers (optional)
@@ -67,7 +68,7 @@
 				// IEもFirefoxもbuttonプロパティで判定したほうがよいが、
 				// 設定値に違いがあるので注意
 				if (ev.button !== undefined) {
-					if (ev.button == 0) {
+					if (ev.button === 0) {
 						// Firefoxは左クリックが０になっている
 						buttonKey = Listener._EVENT_BUTTON_LEFT;
 					} else {
@@ -76,9 +77,9 @@
 					}
 				} else if (ev.which !== undefined) {
 					// whichプロパティはIEで左右クリックが検出できない
-					if (ev.which == Listener._EVENT_WHICH_LEFT) {
+					if (ev.which === Listener._EVENT_WHICH_LEFT) {
 						buttonKey = Listener._EVENT_BUTTON_LEFT;
-					} else if (ev.which == Listener._EVENT_WHICH_RIGHT) {
+					} else if (ev.which === Listener._EVENT_WHICH_RIGHT) {
 						buttonKey = Listener._EVENT_BUTTON_RIGHT;
 					} else {
 						buttonKey = 0;
@@ -103,11 +104,11 @@
 				this._buttonIndex = -1;
 
 				// 押されたボタンに応じた処理を呼出す
-				if (this._buttonKey == Listener._EVENT_BUTTON_LEFT) {
+				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
 					this._settings.onCellLeftClick(idx);
-				} else if (this._buttonKey == Listener._EVENT_BUTTON_RIGHT) {
+				} else if (this._buttonKey === Listener._EVENT_BUTTON_RIGHT) {
 					this._settings.onCellRightClick(idx);
-				} else if (this._buttonKey == Listener._EVENT_BUTTON_BOTH) {
+				} else if (this._buttonKey === Listener._EVENT_BUTTON_BOTH) {
 					this._settings.onCellBothClick(idx);
 				} else {
 					this._settings.onCellLeftClick(idx);
@@ -217,23 +218,23 @@
 			},
 			// マスが隠れているかどうか判定する
 			_isHidden: function(idx) {
-				return this._getState(idx).charAt(0) == Board._STATE_HIDDEN;
+				return this._getState(idx).charAt(0) === Board._STATE_HIDDEN;
 			},
 			// マスに印がついていないどうか判定する
 			_isNotMarked: function(idx) {
-				return this._getState(idx) == Board._STATE_NOT_MARKED;
+				return this._getState(idx) === Board._STATE_NOT_MARKED;
 			},
 			// 旗が立っているかどうか判定する
 			_isFlagged: function(idx) {
-				return this._getState(idx) == Board._STATE_FLAGGED;
+				return this._getState(idx) === Board._STATE_FLAGGED;
 			},
 			// 不明状態どうか判定する
 			_isUncertain: function(idx) {
-				return this._getState(idx) == Board._STATE_UNCERTAIN;
+				return this._getState(idx) === Board._STATE_UNCERTAIN;
 			},
 			// マスが開いているかどうか判定する
 			_isOpened: function(idx) {
-				return this._getState(idx).charAt(0) == Board._STATE_OPENED;
+				return this._getState(idx).charAt(0) === Board._STATE_OPENED;
 			},
 			// 周囲の地雷数を取得する
 			_getMineCount: function(idx) {
@@ -345,7 +346,7 @@
 				
 				// 配列から該当する位置の地雷を除去
 				$.each(this._arrMines, function(i, val) {
-					if (val == pos) {
+					if (val === pos) {
 						location._arrMines.splice(i, 1);
 						delete location._mapMines[pos];
 						location._emptyCells++;
@@ -451,43 +452,9 @@
 				// 設定の取得
 				this._settings = settings;
 
-				// 対象要素をブロック
-				if ($.blockUI) {
-					this._$target.block();
-				}
-
-				
 				// 盤面サイズの初期化
 				this._initSize();
-				// 盤面を描画
-				this._$target.html(this._generateHtml());
-				
-				// 盤面オブジェクトを作成
-				this._board = new Board(this._$target.find(".minesweeper-cells > span"));
-				// 残り地雷数表示欄を取得
-				this._$txtMines = this._$target.find(".minesweeper-mines");
-				// タイマーオブジェクトを作成
-				this._$txtTimer = this._$target.find(".minesweeper-timer");
-				// 再開ボタンを取得
-				this._$btnRestart = this._$target.find(".minesweeper-restart");
-				
-				// ロケール依存のテキストを設定
-				this._$txtMines.before(this._settings.minesTextBefore);
-				this._$txtMines.after(this._settings.minesTextAfter);
-				this._$txtTimer.before(this._settings.timerTextBefore);
-				this._$txtTimer.after(this._settings.timerTextAfter);
-				this._$btnRestart.text(this._settings.restartText);
-				
-				// 各種リスナ登録
-				this._registListeners();
-				
-				// ゲームの初期化
-				this._resetGame();
-				
-				// 対象要素のブロック解除
-				if ($.blockUI) {
-					this._$target.unblock();
-				}
+
 				
 			},
 			// 盤面サイズ初期化処理
@@ -541,8 +508,45 @@
 					}
 				} else {
 					// 未設定の場合、盤面のサイズに応じて設定する
-					var percent = 10 + Math.floor(this._cells / 45)
+					var percent = 10 + Math.floor(this._cells / 45);
 					this._mines = Math.round(this._cells * percent / 1000) * 10;
+				}
+			},
+			// 盤面表示処理
+			_show: function() {
+				// 対象要素をブロック
+				if ($.blockUI) {
+					this._$target.block();
+				}
+
+				// 盤面を描画
+				this._$target.html(this._generateHtml());
+				
+				// 盤面オブジェクトを作成
+				this._board = new Board(this._$target.find(".minesweeper-cells > span"));
+				// 残り地雷数表示欄を取得
+				this._$txtMines = this._$target.find(".minesweeper-mines");
+				// タイマーオブジェクトを作成
+				this._$txtTimer = this._$target.find(".minesweeper-timer");
+				// 再開ボタンを取得
+				this._$btnRestart = this._$target.find(".minesweeper-restart");
+				
+				// ロケール依存のテキストを設定
+				this._$txtMines.before(this._settings.minesTextBefore);
+				this._$txtMines.after(this._settings.minesTextAfter);
+				this._$txtTimer.before(this._settings.timerTextBefore);
+				this._$txtTimer.after(this._settings.timerTextAfter);
+				this._$btnRestart.text(this._settings.restartText);
+				
+				// 各種リスナ登録
+				this._registListeners();
+				
+				// ゲームの初期化
+				this._resetGame();
+				
+				// 対象要素のブロック解除
+				if ($.blockUI) {
+					this._$target.unblock();
 				}
 			},
 			// HTML生成処理
@@ -558,7 +562,7 @@
 				html += '<span class="minesweeper-timer" ></span>';
 				html += '<div class="minesweeper-cells" >';
 				for (idx = 0; idx < this._cells; idx++) {
-					if (idx > 0 && idx % this._width == 0) {
+					if (idx > 0 && idx % this._width === 0) {
 						html += '<br />';
 					}
 					html += '<span></span>';
@@ -615,6 +619,8 @@
 			// マスの右クリック時処理
 			_onCellRightClick: function(idx) {
 			
+				var mines;
+			
 				// すでに開いていたら何もしない
 				if (this._board._isOpened(idx)) {
 					return;
@@ -624,12 +630,12 @@
 				if (this._board._isNotMarked(idx)) {
 					//無印→旗
 					this._board._setFlagged(idx);
-					var mines = parseInt(this._$txtMines.text(), 10);
+					mines = parseInt(this._$txtMines.text(), 10);
 					this._$txtMines.text(mines - 1);
 				} else if (this._board._isFlagged(idx)) {
 					//旗→不明
 					this._board._setUncertain(idx);
-					var mines = parseInt(this._$txtMines.text(), 10);
+					mines = parseInt(this._$txtMines.text(), 10);
 					this._$txtMines.text(mines + 1);
 				} else if (this._board._isUncertain(idx)) {
 					//不明→無印
@@ -818,8 +824,7 @@
 				// 地雷の位置と旗を間違えて立てた箇所を表示
 				game._board._each(function(idx) {
 					if (game._mineLocation._contains(idx)) {
-						if (game._board._isFlagged(idx)) {
-						} else {
+						if (!game._board._isFlagged(idx)) {
 							game._board._setMine(idx);
 						}
 					} else if (game._board._isFlagged(idx)) {
@@ -892,7 +897,7 @@
 				}
 
 				// 周囲に１つも地雷がない場合
-				if (mineCount == 0) {
+				if (mineCount === 0) {
 					// 周囲のマスを連鎖で開く
 					$.each(arrNeighbors, function(i, val) {
 						game._openSafe(val);
@@ -959,7 +964,7 @@
 				return false;
 			});
 			// マインスイーパクラスを作成する
-			new MineSweeper(this, settings);
+			new MineSweeper(this, settings)._show();
 		});
 	};
 	
