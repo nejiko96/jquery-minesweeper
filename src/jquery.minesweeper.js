@@ -37,12 +37,24 @@
 			_EVENT_WHICH_RIGHT: 3,
 			// 初期設定
 			_DEFAULT_SETTINGS: {
-				// 左クリック時処理
-				onCellLeftClick: function() {},
-				// 右クリック時処理
-				onCellRightClick: function() {},
-				// 左右クリック時処理
-				onCellBothClick: function() {}
+				// 左マウスダウン時処理
+				onCellLeftMouseDown: jQuery.noop,
+				// 右マウスダウン時処理
+				onCellRightMouseDown: jQuery.noop,
+				// 左右マウスダウン時処理
+				onCellBothMouseDown: jQuery.noop,
+				// 左マウスムーブ時処理
+				onCellLeftMouseMove: jQuery.noop,
+				// 右マウスムーブ時処理
+				onCellRightMouseMove: jQuery.noop,
+				// 左右マウスムーブ時処理
+				onCellBothMouseMove: jQuery.noop,
+				// 左マウスアップ時処理
+				onCellLeftMouseUp: jQuery.noop,
+				// 右マウスアップ時処理
+				onCellRightMouseUp: jQuery.noop,
+				// 左右マウスアップ時処理
+				onCellBothMouseUp: jQuery.noop
 			}
 		}
 	);
@@ -63,7 +75,7 @@
 			// マスのマウスダウン時処理
 			_onCellMouseDown: function(ev, idx) {
 			
-				var buttonKey;
+				var buttonKey = 0;
 
 				// IEもFirefoxもbuttonプロパティで判定したほうがよいが、
 				// 設定値に違いがあるので注意
@@ -85,34 +97,62 @@
 						buttonKey = 0;
 					}
 				}
-				//押されたボタンとダウン位置を記憶
-				if (idx != this._buttonIndex) {
-					this._buttonIndex = idx;
-					this._buttonKey = buttonKey;
-				} else {
-					this._buttonKey |= buttonKey;
+				
+				// 押下中のボタンとマウス位置を記憶
+				this._buttonIndex = idx;
+				this._buttonKey |= buttonKey;
+				
+				// マウスダウンイベントをトリガーする
+				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
+					this._settings.onCellLeftMouseDown(idx);
+				} else if (this._buttonKey === Listener._EVENT_BUTTON_RIGHT) {
+					this._settings.onCellRightMouseDown(idx);
+				} else if (this._buttonKey === Listener._EVENT_BUTTON_BOTH) {
+					this._settings.onCellBothMouseDown(idx);
 				}
+			},
+			// マスのマウスムーブ時処理
+			_onCellMouseMove: function(ev, idx) {
+			
+				// 現在のマウス位置を取得
+				var curIdx = this._buttonIndex;
+			
+				// 同じマス内の移動の場合は無処理
+				if (idx === curIdx) {
+					return;
+				}
+				// マウス位置を記憶
+				this._buttonIndex = idx;
+				
+				// 押下中のボタンに応じた処理を呼出す
+				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
+					this._settings.onCellLeftMouseMove(curIdx, idx);
+				} else if (this._buttonKey === Listener._EVENT_BUTTON_RIGHT) {
+					this._settings.onCellRightMouseMove(curIdx, idx);
+				} else if (this._buttonKey === Listener._EVENT_BUTTON_BOTH) {
+					this._settings.onCellBothMouseMove(curIdx, idx);
+				}
+
 			},
 			// マスのマウスアップ時処理
 			_onCellMouseUp: function(ev, idx) {
-				// マウスアップ位置がマウスダウン位置と異なる場合は処理しない
-				if (idx != this._buttonIndex) {
-					this._buttonIndex = -1;
-					return;
-				}
-				// マウスダウン位置をリセット
-				this._buttonIndex = -1;
 
-				// 押されたボタンに応じた処理を呼出す
-				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
-					this._settings.onCellLeftClick(idx);
-				} else if (this._buttonKey === Listener._EVENT_BUTTON_RIGHT) {
-					this._settings.onCellRightClick(idx);
-				} else if (this._buttonKey === Listener._EVENT_BUTTON_BOTH) {
-					this._settings.onCellBothClick(idx);
-				} else {
-					this._settings.onCellLeftClick(idx);
+				// 押下中のボタンを取得
+				var buttonKey = this._buttonKey;
+
+				// 押下中のボタンとマウス位置をリセット
+				this._buttonIndex = -1;
+				this._buttonKey = 0;
+
+				// 押下中のボタンに応じた処理を呼出す
+				if (buttonKey === Listener._EVENT_BUTTON_LEFT) {
+					this._settings.onCellLeftMouseUp(idx);
+				} else if (buttonKey === Listener._EVENT_BUTTON_RIGHT) {
+					this._settings.onCellRightMouseUp(idx);
+				} else if (buttonKey === Listener._EVENT_BUTTON_BOTH) {
+					this._settings.onCellBothMouseUp(idx);
 				}
+
 			}
 		}
 	);
@@ -167,30 +207,45 @@
 				// 自分自身をローカル変数に待避
 				var board = this;
 				// マスの配列
-				var cells = board._$cells;
+				var $cells = board._$cells;
 				
 				// イベントリスナを作成し、
 				// クリック時の処理（盤面のイベントとしてトリガーする）を登録する
 				var listener = new Listener({
-					onCellLeftClick: function(idx) {
-						$(board).trigger("cell_leftclick", [idx]);
+					onCellLeftMouseDown: function(idx) {
+						$(board).trigger("cell_left_mousedown", [idx]);
 					},
-					onCellRightClick: function(idx) {
-						$(board).trigger("cell_rightclick", [idx]);
+					onCellLeftMouseMove: function(idx1, idx2) {
+						$(board).trigger("cell_left_mousemove", [idx1, idx2]);
 					},
-					onCellBothClick: function(idx) {
-						$(board).trigger("cell_bothclick", [idx]);
+					onCellLeftMouseUp: function(idx) {
+						$(board).trigger("cell_left_mouseup", [idx]);
+					},
+					onCellRightMouseDown: function(idx) {
+						$(board).trigger("cell_right_mousedown", [idx]);
+					},
+					onCellBothMouseDown: function(idx) {
+						$(board).trigger("cell_both_mousedown", [idx]);
+					},
+					onCellBothMouseMove: function(idx1, idx2) {
+						$(board).trigger("cell_both_mousemove", [idx1, idx2]);
+					},
+					onCellBothMouseUp: function(idx) {
+						$(board).trigger("cell_both_mouseup", [idx]);
 					}
 				});
 				
 				// １つ１つのマスのマウスイベントを補足し、
 				// リスナのメソッドを呼出す
-				cells.each(function() {
+				$cells.each(function() {
 					$(this).mousedown(function(ev) {
-						listener._onCellMouseDown(ev, $(cells).index(this));
+						listener._onCellMouseDown(ev, $cells.index(this));
+					})
+					.mousemove(function(ev) {
+						listener._onCellMouseMove(ev, $cells.index(this));
 					})
 					.mouseup(function(ev) {
-						listener._onCellMouseUp(ev, $(cells).index(this));
+						listener._onCellMouseUp(ev, $cells.index(this));
 					});
 				});
 			},
@@ -213,6 +268,34 @@
 				this._$cells
 					.eq(idx)
 					.data("state", state)
+					.removeClass()
+					.addClass(Board._STATE_CLASS + state);
+			},
+			// マスでボタンを押下した状態にする
+			_press: function(idx) {
+				var $cell = this._$cells.eq(idx);
+				var state = $cell.data("state");
+				if (state.charAt(0) === Board._STATE_OPENED) {
+					return;
+				}
+				if (state === Board._STATE_FLAGGED) {
+					return;
+				}
+				$cell
+					.removeClass()
+					.addClass(Board._STATE_CLASS + Board._STATE_OPENED + "0");
+			},
+			// マスでボタンを離した状態にする
+			_release: function(idx) {
+				var $cell = this._$cells.eq(idx);
+				var state = $cell.data("state");
+				if (state.charAt(0) === Board._STATE_OPENED) {
+					return;
+				}
+				if (state === Board._STATE_FLAGGED) {
+					return;
+				}
+				$cell
 					.removeClass()
 					.addClass(Board._STATE_CLASS + state);
 			},
@@ -433,6 +516,18 @@
 				new Vector2D(-1,  1),
 				new Vector2D(-1,  0)
 			],
+			// 自分を含めた、隣接するマスの方向
+			_NEIGHBOR_AREA: [
+				new Vector2D(-1, -1),
+				new Vector2D( 0, -1),
+				new Vector2D( 1, -1),
+				new Vector2D( 1,  0),
+				new Vector2D( 1,  1),
+				new Vector2D( 0,  1),
+				new Vector2D(-1,  1),
+				new Vector2D(-1,  0),
+				new Vector2D( 0,  0)
+			],
 			// タイマーの更新インターバル（1秒）
 			_TIMER_UPDATE_INTERVAL: '1s',
 			// タイマーの表示最大カウント
@@ -587,8 +682,21 @@
 					});
 					
 			},
-			// マスの左クリック時処理
-			_onCellLeftClick: function(idx) {
+			// マスの左マウスダウン時処理
+			_onCellLeftMouseDown: function(idx) {
+				// マスを押下
+				this._board._press(idx);
+			},
+			// マスの左マウスムーブ時処理
+			_onCellLeftMouseMove: function(idx1, idx2) {
+				// 移動元のマスを離す
+				this._board._release(idx1);
+				// 移動先のマスを押下
+				this._board._press(idx2);
+			
+			},
+			// マスの左マウスアップ時処理
+			_onCellLeftMouseUp: function(idx) {
 			
 				// ゲームが始まっていない場合、開始する。
 				if (!this._mineLocation) {
@@ -616,8 +724,8 @@
 				// マスを開く
 				this._openSafe(idx);
 			},
-			// マスの右クリック時処理
-			_onCellRightClick: function(idx) {
+			// マスの右マウスダウン時処理
+			_onCellRightMouseDown: function(idx) {
 			
 				var mines;
 			
@@ -642,8 +750,91 @@
 					this._board._setNotMarked(idx);
 				}
 			},
-			// マスの左右クリック時処理
-			_onCellBothClick: function(idx) {
+			// マスの左右マウスダウン時処理
+			_onCellBothMouseDown: function(idx) {
+			
+				var neighbor;
+				
+				// 自分自身をローカル変数に待避する
+				var game = this;
+
+				//隣接するマスを全て調べる
+				$.each(MineSweeper._NEIGHBOR_AREA, function(i, dir) {
+					//隣接するマスの位置を求める
+					neighbor = game._calcNeighborPos(idx, dir);
+					// 盤面の外側の場合何もしない
+					if (neighbor < 0) {
+						return;
+					}
+					// マスを押下
+					game._board._press(neighbor);
+				});
+			},
+			// マスの左右マウスムーブ時処理
+			_onCellBothMouseMove: function(idx1, idx2) {
+			
+				var action = {};
+				var neighbor;
+
+				// 自分自身をローカル変数に待避する
+				var game = this;
+
+				// 自分自身を含めて隣接するマスを全て調べる
+				$.each(MineSweeper._NEIGHBOR_AREA, function(i, dir) {
+					// 隣接するマスの位置を求める
+					neighbor = game._calcNeighborPos(idx1, dir);
+					// 盤面の外側の場合何もしない
+					if (neighbor < 0) {
+						return;
+					}
+					// 離すマスに追加する
+					action[neighbor] = 2;
+				});
+				// 自分自身を含めて隣接するマスを全て調べる
+				$.each(MineSweeper._NEIGHBOR_AREA, function(i, dir) {
+					// 隣接するマスの位置を求める
+					neighbor = game._calcNeighborPos(idx2, dir);
+					// 盤面の外側の場合何もしない
+					if (neighbor < 0) {
+						return;
+					}
+					if (action[neighbor] !== undefined) {
+						// 離すマスから削除する
+						delete action[neighbor];
+					} else {
+						// 押下するマスに追加する
+						action[neighbor] = 1;
+					}
+				});
+				for (var idx in action) {
+					if (action[idx] === 1) {
+						// マスを押下
+						game._board._press(idx);
+					}
+					if (action[idx] === 2) {
+						// マスを離す
+						game._board._release(idx);
+					}
+				}
+			},
+			// マスの左右マウスアップ時処理
+			_onCellBothMouseUp: function(idx) {
+
+				var neighbor;
+				// 自分自身をローカル変数に待避する
+				var game = this;
+
+				// 自分自身を含めて隣接するマスを全て調べる
+				$.each(MineSweeper._NEIGHBOR_AREA, function(i, dir) {
+					// 隣接するマスの位置を求める
+					neighbor = game._calcNeighborPos(idx, dir);
+					// 盤面の外側の場合何もしない
+					if (neighbor < 0) {
+						return;
+					}
+					// マスを離す
+					game._board._release(neighbor);
+				});
 
 				// まだ開いていないマスだったら何もしない
 				if (this._board._isHidden(idx)) {
@@ -666,7 +857,7 @@
 				$.each(MineSweeper._NEIGHBOR_DIRECTIONS, function(i, dir) {
 				
 					//隣接するマスの位置を求める
-					var neighbor = game._calcNeighborPos(idx, dir);
+					neighbor = game._calcNeighborPos(idx, dir);
 					
 					//盤面の外側の場合何もしない
 					if (neighbor < 0) {
@@ -751,14 +942,26 @@
 				var game = this;
 				$(this._board)
 					.unbind("")
-					.bind("cell_leftclick", function(ev, idx) {
-						game._onCellLeftClick(idx);
+					.bind("cell_left_mousedown", function(ev, idx) {
+						game._onCellLeftMouseDown(idx);
 					})
-					.bind("cell_rightclick", function(ev, idx) {
-						game._onCellRightClick(idx);
+					.bind("cell_left_mousemove", function(ev, idx1, idx2) {
+						game._onCellLeftMouseMove(idx1, idx2);
 					})
-					.bind("cell_bothclick", function(ev, idx) {
-						game._onCellBothClick(idx);
+					.bind("cell_left_mouseup", function(ev, idx) {
+						game._onCellLeftMouseUp(idx);
+					})
+					.bind("cell_right_mousedown", function(ev, idx) {
+						game._onCellRightMouseDown(idx);
+					})
+					.bind("cell_both_mousedown", function(ev, idx) {
+						game._onCellBothMouseDown(idx);
+					})
+					.bind("cell_both_mousemove", function(ev, idx1, idx2) {
+						game._onCellBothMouseMove(idx1, idx2);
+					})
+					.bind("cell_both_mouseup", function(ev, idx) {
+						game._onCellBothMouseUp(idx);
 					});
 			},
 			// ゲーム開始処理
@@ -959,8 +1162,8 @@
 	
 		// 上記の設定でマインスイーパの盤面を作成する
 		return $(this).each(function() {
-			// コンテキストメニュー抑止
-			$(this).bind("contextmenu", function() {
+			// コンテキストメニュー・範囲選択抑止
+			$(this).bind("contextmenu selectstart", function() {
 				return false;
 			});
 			// マインスイーパクラスを作成する
