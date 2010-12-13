@@ -33,15 +33,33 @@
 	</style>
 	<script type="text/javascript" >
 		$(function() {
-			$(".minesweeper-cells div, .minesweeper-cells span")
+		
+			if (window.console === undefined) {
+				window.console = {};
+				window.console.log = function(msg) {
+					window.status = msg;
+				}
+			}
+			
+			// コンテキストメニュー・範囲選択抑止
+			$("#minesweeper").bind("contextmenu selectstart", function() {
+				return false;
+			});
+			
+			var $cells = $(".minesweeper-cells div, .minesweeper-cells span");
+			
+			$cells
 			.click(function() {
 				$(this).removeClass().addClass("minesweeper-state10");
 			})
-			.mousedown(function() {
-				window.status='mousedown';
+			.mousedown(function(ev) {
+				console.log($cells.index(this) +':mousedown:button=' + ev.button);
 			})
 			.mouseup(function() {
-				window.status='mouseup';
+				console.log($cells.index(this) +':mouseup');
+			})
+			.mousemove(function() {
+				console.log($cells.index(this) +':mousemove');
 			});
 		});
 	</script>
