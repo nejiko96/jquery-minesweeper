@@ -58,8 +58,14 @@
 			.mouseup(function() {
 				console.log($cells.index(this) +':mouseup');
 			})
-			.mousemove(function() {
-				console.log($cells.index(this) +':mousemove');
+//			.mousemove(function() {
+//				console.log($cells.index(this) +':mousemove');
+//			})
+			.mouseover(function() {
+				console.log($cells.index(this) +':mouseover');
+			})
+			.mouseout(function() {
+				console.log($cells.index(this) +':mouseout');
 			});
 		});
 	</script>
