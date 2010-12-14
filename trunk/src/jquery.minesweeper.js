@@ -366,7 +366,6 @@
 					return;
 				}
 				var $cell = this._$cells.eq(idx);
-				var state = $cell.data("state");
 				$cell
 					.removeClass()
 					.addClass(Board._STATE_CLASS + Board._STATE_VACANT);
