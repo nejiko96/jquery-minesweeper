@@ -10,6 +10,14 @@
 	<script type="text/javascript" src="../src/i18n/jquery.minesweeper-ja.js" ></script>
 	<script type="text/javascript" >
 	$(function() {
+	
+		if (window.console === undefined) {
+			window.console = {};
+			window.console.log = function(msg) {
+				window.status = msg;
+			}
+		}
+		
 //		$.minesweeper.defaults.level = "medium";
 		$("#minesweeper1").minesweeper();
 		$("#minesweeper2").minesweeper({level: "easy"});

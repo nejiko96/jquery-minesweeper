@@ -38,29 +38,29 @@
 			// 初期設定
 			_DEFAULT_SETTINGS: {
 				// 左マウスダウン時処理
-				onCellLeftMouseDown: jQuery.noop,
+				onCellLeftMouseDown: $.noop,
 				// 右マウスダウン時処理
-				onCellRightMouseDown: jQuery.noop,
+				onCellRightMouseDown: $.noop,
 				// 左右マウスダウン時処理
-				onCellBothMouseDown: jQuery.noop,
+				onCellBothMouseDown: $.noop,
 				// 左マウスオーバー時処理
-				onCellLeftMouseOver: jQuery.noop,
+				onCellLeftMouseOver: $.noop,
 				// 右マウスオーバー時処理
-				onCellRightMouseOver: jQuery.noop,
+				onCellRightMouseOver: $.noop,
 				// 左右マウスオーバー時処理
-				onCellBothMouseOver: jQuery.noop,
+				onCellBothMouseOver: $.noop,
 				// 左マウスアウト時処理
-				onCellLeftMouseOver: jQuery.noop,
+				onCellLeftMouseOut: $.noop,
 				// 右マウスアウト時処理
-				onCellRightMouseOver: jQuery.noop,
+				onCellRightMouseOut: $.noop,
 				// 左右マウスアウト時処理
-				onCellBothMouseOver: jQuery.noop,
+				onCellBothMouseOut: $.noop,
 				// 左マウスアップ時処理
-				onCellLeftMouseUp: jQuery.noop,
+				onCellLeftMouseUp: $.noop,
 				// 右マウスアップ時処理
-				onCellRightMouseUp: jQuery.noop,
+				onCellRightMouseUp: $.noop,
 				// 左右マウスアップ時処理
-				onCellBothMouseUp: jQuery.noop
+				onCellBothMouseUp: $.noop
 			}
 		}
 	);
@@ -73,8 +73,6 @@
 			_init: function(settings) {
 				// 初期設定を引数の設定値で拡張する
 				this._settings = $.extend({}, Listener._DEFAULT_SETTINGS, settings || {});
-				// ボタン押下位置
-				this._buttonIndex = -1;
 				// ダウンボタンキー
 				this._buttonKey = 0;
 			},
@@ -104,8 +102,7 @@
 					}
 				}
 				
-				// 押下中のボタンとマウス位置を記憶
-				this._buttonIndex = idx;
+				// 押下中のボタンを記憶
 				this._buttonKey |= buttonKey;
 				
 				// マウスダウンイベントをトリガーする
@@ -120,8 +117,10 @@
 			// マスのマウスオーバー時処理
 			_onCellMouseOver: function(ev, idx) {
 			
-				// マウス位置を記憶
-				this._buttonIndex = idx;
+				// ボタンを押していない場合は処理なし
+				if (this._buttonKey === 0) {
+					return;
+				}
 				
 				// 押下中のボタンに応じた処理を呼出す
 				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
@@ -135,8 +134,10 @@
 			// マスのマウスアウト時処理
 			_onCellMouseOut: function(ev, idx) {
 			
-				// マウス位置をリセット
-				this._buttonIndex = 0;
+				// ボタンを押していない場合は処理なし
+				if (this._buttonKey === 0) {
+					return;
+				}
 				
 				// 押下中のボタンに応じた処理を呼出す
 				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
@@ -150,11 +151,15 @@
 			// マスのマウスアップ時処理
 			_onCellMouseUp: function(ev, idx) {
 
+				// ボタンを押していない場合は処理なし
+				if (this._buttonKey === 0) {
+					return;
+				}
+				
 				// 押下中のボタンを取得
 				var buttonKey = this._buttonKey;
 
-				// 押下中のボタンとマウス位置をリセット
-				this._buttonIndex = -1;
+				// 押下中のボタンをリセット
 				this._buttonKey = 0;
 
 				// 押下中のボタンに応じた処理を呼出す
@@ -227,10 +232,10 @@
 					onCellLeftMouseDown: function(idx) {
 						$(board).trigger("cell_left_mousedown", [idx]);
 					},
-					onCellLeftMouseMove: function(idx) {
+					onCellLeftMouseOver: function(idx) {
 						$(board).trigger("cell_left_mouseover", [idx]);
 					},
-					onCellLeftMouseMove: function(idx1, idx2) {
+					onCellLeftMouseOut: function(idx1, idx2) {
 						$(board).trigger("cell_left_mouseout", [idx1]);
 					},
 					onCellLeftMouseUp: function(idx) {
@@ -242,10 +247,10 @@
 					onCellBothMouseDown: function(idx) {
 						$(board).trigger("cell_both_mousedown", [idx]);
 					},
-					onCellBothMouseMove: function(idx) {
+					onCellBothMouseOver: function(idx) {
 						$(board).trigger("cell_both_mouseover", [idx]);
 					},
-					onCellBothMouseMove: function(idx) {
+					onCellBothMouseOut: function(idx) {
 						$(board).trigger("cell_both_mouseout", [idx]);
 					},
 					onCellBothMouseUp: function(idx) {
@@ -289,34 +294,6 @@
 				this._$cells
 					.eq(idx)
 					.data("state", state)
-					.removeClass()
-					.addClass(Board._STATE_CLASS + state);
-			},
-			// マスでボタンを押下した状態にする
-			_press: function(idx) {
-				var $cell = this._$cells.eq(idx);
-				var state = $cell.data("state");
-				if (state.charAt(0) === Board._STATE_OPENED) {
-					return;
-				}
-				if (state === Board._STATE_FLAGGED) {
-					return;
-				}
-				$cell
-					.removeClass()
-					.addClass(Board._STATE_CLASS + Board._STATE_OPENED + "0");
-			},
-			// マスでボタンを離した状態にする
-			_release: function(idx) {
-				var $cell = this._$cells.eq(idx);
-				var state = $cell.data("state");
-				if (state.charAt(0) === Board._STATE_OPENED) {
-					return;
-				}
-				if (state === Board._STATE_FLAGGED) {
-					return;
-				}
-				$cell
 					.removeClass()
 					.addClass(Board._STATE_CLASS + state);
 			},
@@ -371,6 +348,39 @@
 			// 地雷選択間違い状態に設定する
 			_setMistake: function(idx) {
 				this._setState(idx, Board._STATE_MISTAKE);
+			},
+			// マスがロックされているかどうか判定する
+			_isFixed: function(idx) {
+				var state = this._getState(idx);
+				if (state === Board._STATE_NOT_MARKED) {
+					return false;
+				}
+				if (state === Board._STATE_UNCERTAIN) {
+					return false;
+				}
+				return true;
+			},
+			// マスでボタンを押下した状態にする
+			_press: function(idx) {
+				if (this._isFixed(idx)) {
+					return;
+				}
+				var $cell = this._$cells.eq(idx);
+				var state = $cell.data("state");
+				$cell
+					.removeClass()
+					.addClass(Board._STATE_CLASS + Board._STATE_VACANT);
+			},
+			// マスでボタンを離した状態にする
+			_release: function(idx) {
+				if (this._isFixed(idx)) {
+					return;
+				}
+				var $cell = this._$cells.eq(idx);
+				var state = $cell.data("state");
+				$cell
+					.removeClass()
+					.addClass(Board._STATE_CLASS + state);
 			},
 			// 全てのマスに対してコールバック処理を呼出す
 			_each: function(callback) {
@@ -470,16 +480,6 @@
 	);
 	
 	/**
-	 * ２次元ベクトルクラス
-	 * @constructor
-	 */
-	var Vector2D = function(x, y) {
-		this._x = x;
-		this._y = y;
-	};
-	
-	
-	/**
 	 * マインスイーパクラス
 	 * @constructor
 	 */
@@ -526,29 +526,6 @@
 			_HEIGHT_MAX: 24,
 			// 地雷数の下限
 			_MINES_MIN: 10,
-			// 隣接するマスの方向
-			_NEIGHBOR_DIRECTIONS: [
-				new Vector2D(-1, -1),
-				new Vector2D( 0, -1),
-				new Vector2D( 1, -1),
-				new Vector2D( 1,  0),
-				new Vector2D( 1,  1),
-				new Vector2D( 0,  1),
-				new Vector2D(-1,  1),
-				new Vector2D(-1,  0)
-			],
-			// 自分を含めた、隣接するマスの方向
-			_NEIGHBOR_AREA: [
-				new Vector2D(-1, -1),
-				new Vector2D( 0, -1),
-				new Vector2D( 1, -1),
-				new Vector2D( 1,  0),
-				new Vector2D( 1,  1),
-				new Vector2D( 0,  1),
-				new Vector2D(-1,  1),
-				new Vector2D(-1,  0),
-				new Vector2D( 0,  0)
-			],
 			// タイマーの更新インターバル（1秒）
 			_TIMER_UPDATE_INTERVAL: '1s',
 			// タイマーの表示最大カウント
@@ -726,16 +703,11 @@
 					this._startGame(idx);
 				}
 				
-				// すでに開いていたら何もしない
-				if (this._board._isOpened(idx)) {
+				// 開いてるか旗が立っていたら何もしない
+				if (this._board._isFixed(idx)) {
 					return;
 				}
 				
-				// 旗が立っている場合何もしない
-				if (this._board._isFlagged(idx)) {
-					return;
-				}
-					
 				// 地雷を選んだ場合
 				if (this._mineLocation._contains(idx)) {
 					//ゲームオーバー
@@ -776,19 +748,11 @@
 			// マスの左右マウスダウン時処理
 			_onCellBothMouseDown: function(idx) {
 			
-				var neighbor;
-				
 				// 自分自身をローカル変数に待避する
 				var game = this;
 
 				//隣接するマスを全て調べる
-				$.each(MineSweeper._NEIGHBOR_AREA, function(i, dir) {
-					//隣接するマスの位置を求める
-					neighbor = game._calcNeighborPos(idx, dir);
-					// 盤面の外側の場合何もしない
-					if (neighbor < 0) {
-						return;
-					}
+				$.each(this._neighbors(idx), function(i, neighbor) {
 					// マスを押下
 					game._board._press(neighbor);
 				});
@@ -800,13 +764,7 @@
 				var game = this;
 
 				// 自分自身を含めて隣接するマスを全て調べる
-				$.each(MineSweeper._NEIGHBOR_AREA, function(i, dir) {
-					// 隣接するマスの位置を求める
-					var neighbor = game._calcNeighborPos(idx, dir);
-					// 盤面の外側の場合何もしない
-					if (neighbor < 0) {
-						return;
-					}
+				$.each(this._neighbors(idx), function(i, neighbor) {
 					// マスを押下
 					game._board._press(neighbor);
 				});
@@ -818,13 +776,7 @@
 				var game = this;
 
 				// 自分自身を含めて隣接するマスを全て調べる
-				$.each(MineSweeper._NEIGHBOR_AREA, function(i, dir) {
-					// 隣接するマスの位置を求める
-					var neighbor = game._calcNeighborPos(idx, dir);
-					// 盤面の外側の場合何もしない
-					if (neighbor < 0) {
-						return;
-					}
+				$.each(this._neighbors(idx), function(i, neighbor) {
 					// マスを離す
 					game._board._release(neighbor);
 				});
@@ -832,18 +784,11 @@
 			// マスの左右マウスアップ時処理
 			_onCellBothMouseUp: function(idx) {
 
-				var neighbor;
 				// 自分自身をローカル変数に待避する
 				var game = this;
 
 				// 自分自身を含めて隣接するマスを全て調べる
-				$.each(MineSweeper._NEIGHBOR_AREA, function(i, dir) {
-					// 隣接するマスの位置を求める
-					neighbor = game._calcNeighborPos(idx, dir);
-					// 盤面の外側の場合何もしない
-					if (neighbor < 0) {
-						return;
-					}
+				$.each(this._neighbors(idx), function(i, neighbor) {
 					// マスを離す
 					game._board._release(neighbor);
 				});
@@ -863,16 +808,8 @@
 				var arrExplosion = [];
 				
 				//隣接するマスを全て調べる
-				$.each(MineSweeper._NEIGHBOR_DIRECTIONS, function(i, dir) {
+				$.each(this._surroundings(idx), function(i, neighbor) {
 				
-					//隣接するマスの位置を求める
-					neighbor = game._calcNeighborPos(idx, dir);
-					
-					//盤面の外側の場合何もしない
-					if (neighbor < 0) {
-						return;
-					}
-					
 					// 開いているマスは対象外
 					if (game._board._isOpened(neighbor)) {
 						return;
@@ -969,10 +906,10 @@
 					.bind("cell_both_mousedown", function(ev, idx) {
 						game._onCellBothMouseDown(idx);
 					})
-					.bind("cell_both_mouseOver", function(ev, idx) {
+					.bind("cell_both_mouseover", function(ev, idx) {
 						game._onCellBothMouseOver(idx);
 					})
-					.bind("cell_both_mouseOut", function(ev, idx) {
+					.bind("cell_both_mouseout", function(ev, idx) {
 						game._onCellBothMouseOut(idx);
 					})
 					.bind("cell_both_mouseup", function(ev, idx) {
@@ -1072,16 +1009,8 @@
 				var arrNeighbors = [];
 				
 				// 隣接するマスを調べ、地雷の数と連鎖してあけるマスを取得する
-				$.each(MineSweeper._NEIGHBOR_DIRECTIONS, function(i, dir) {
-				
-					// 隣接するマスの位置を求める
-					var neighbor = game._calcNeighborPos(idx, dir);
-					
-					// 盤面の外側の場合何もしない
-					if (neighbor < 0) {
-						return;
-					}
-					
+				$.each(this._surroundings(idx), function(i, neighbor) {
+
 					// 開いているマスは対象外
 					if (game._board._isOpened(neighbor)) {
 						return;
@@ -1122,24 +1051,55 @@
 					});
 				}
 			},
-			// 隣接するマスの位置を計算する
-			_calcNeighborPos: function(idx, dir) {
+			// 周囲のマスの配列を求める
+			_surroundings: function(idx) {
+			
+				var game = this;
+				var surroundings = [];
 				
-				var x = idx % this._width;
-
-				if (dir._x < 0 && x <= 0) {
-					return -1;
-				}
-				if (dir._x > 0 && x + 1 >= this._width) {
-					return -1;
-				}
-				if (dir._y < 0 && idx < this._width) {
-					return -1;
-				}
-				if (dir._y > 0 && idx + this._width >= this._cells) {
-					return -1;
-				}
-				return idx + dir._y * this._width + dir._x;
+				var x1 = idx % this._width;
+				var y1 = idx - x1;
+				
+				$.each([y1 - game._width, y1, y1 + game._width], function(i, y2) {
+					if (y2 < 0 || y2 >= game._cells) {
+						return;
+					}
+					$.each([x1 - 1,  x1, x1 + 1], function(i, x2) {
+						if (x2 === x1 && y2 === y1) {
+							return;
+						}
+						if (x2 < 0 || x2 >= game._width) {
+							return;
+						}
+						surroundings.push(y2 + x2);
+					});
+				});
+//console.log(idx + ":surrounding:" + surroundings);
+				return surroundings;
+			},
+			// 近傍のマスの配列を求める
+			_neighbors: function(idx) {
+			
+				var game = this;
+				var neighbors = [];
+				
+				var x1 = idx % this._width;
+				var y1 = idx - x1;
+				
+				$.each([y1 - game._width, y1, y1 + game._width], function(i, y2) {
+					if (y2 < 0 || y2 >= game._cells) {
+						return;
+					}
+					$.each([x1 - 1,  x1, x1 + 1], function(i, x2) {
+						if (x2 < 0 || x2 >= game._width) {
+							return;
+						}
+						neighbors.push(y2 + x2);
+					});
+				});
+				
+//console.log(idx + ":neighbor:" + neighbors);
+				return neighbors;
 			}
 		}
 	);
