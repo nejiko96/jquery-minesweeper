@@ -75,6 +75,11 @@
 				this._settings = $.extend({}, Listener._DEFAULT_SETTINGS, settings || {});
 				// ダウンボタンキー
 				this._buttonKey = 0;
+				var listener = this;
+				// マウスアップでクリアされるようにする
+				$(document).mouseup(function() {
+					listener._buttonKey = 0;
+				});
 			},
 			// マスのマウスダウン時処理
 			_onCellMouseDown: function(ev, idx) {
@@ -964,6 +969,7 @@
 				// 残り地雷数の表示をリセット
 				this._$txtMines.text("0");
 				
+				// メッセージ表示
 				alert(this._settings.clearedText);
 				
 			},
@@ -987,7 +993,7 @@
 				});
 
 				// 爆発位置を表示
-				$.each(this._arrExplosion, function(i, pos){
+				$.each(this._arrExplosion, function(i, pos) {
 					game._board._setExplosion(pos);
 				});
 				
@@ -995,7 +1001,7 @@
 			// 安全なマスを開く
 			_openSafe: function(idx) {
 				
-				//すでに開いていたら何もしない
+				// すでに開けられていたら何もしない
 				if (this._board._isOpened(idx)) {
 					return;
 				}
