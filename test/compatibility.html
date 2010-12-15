@@ -46,6 +46,11 @@
 				return false;
 			});
 			
+			
+			$(document).mouseup(function() {
+				console.log('document:mouseup');
+			});
+			
 			var $cells = $(".minesweeper-cells div, .minesweeper-cells span");
 			
 			$cells
