@@ -183,8 +183,8 @@
 	 * マインスイーパ盤面クラス
 	 * @constructor
 	 */
-	var Board = function(target) {
-		this._init(target);
+	var Board = function(target,settings) {
+		this._init(target, settings);
 	};
 
 	// マインスイーパ盤面クラス－定数
@@ -220,73 +220,37 @@
 		Board.prototype,
 		{
 			// 初期化処理
-			_init: function(target) {
+			_init: function(target, settings) {
 				this._$cells = target;
-				this._registListeners();
-			},
-			// リスナ登録処理
-			_registListeners: function() {
-				// 自分自身をローカル変数に待避
-				var board = this;
-				// マスの配列
-				var $cells = board._$cells;
-				
-				// イベントリスナを作成し、
-				// クリック時の処理（盤面のイベントとしてトリガーする）を登録する
-				var listener = new Listener({
-					onCellLeftMouseDown: function(idx) {
-						$(board).trigger("cell_left_mousedown", [idx]);
-					},
-					onCellLeftMouseOver: function(idx) {
-						$(board).trigger("cell_left_mouseover", [idx]);
-					},
-					onCellLeftMouseOut: function(idx1, idx2) {
-						$(board).trigger("cell_left_mouseout", [idx1]);
-					},
-					onCellLeftMouseUp: function(idx) {
-						$(board).trigger("cell_left_mouseup", [idx]);
-					},
-					onCellRightMouseDown: function(idx) {
-						$(board).trigger("cell_right_mousedown", [idx]);
-					},
-					onCellBothMouseDown: function(idx) {
-						$(board).trigger("cell_both_mousedown", [idx]);
-					},
-					onCellBothMouseOver: function(idx) {
-						$(board).trigger("cell_both_mouseover", [idx]);
-					},
-					onCellBothMouseOut: function(idx) {
-						$(board).trigger("cell_both_mouseout", [idx]);
-					},
-					onCellBothMouseUp: function(idx) {
-						$(board).trigger("cell_both_mouseup", [idx]);
-					}
-				});
-				
-				// １つ１つのマスのマウスイベントを補足し、
-				// リスナのメソッドを呼出す
-				$cells.each(function() {
-					$(this).mousedown(function(ev) {
-						listener._onCellMouseDown(ev, $cells.index(this));
-					})
-					.mouseover(function(ev) {
-						listener._onCellMouseOver(ev, $cells.index(this));
-					})
-					.mouseout(function(ev) {
-						listener._onCellMouseOut(ev, $cells.index(this));
-					})
-					.mouseup(function(ev) {
-						listener._onCellMouseUp(ev, $cells.index(this));
-					});
-				});
+				this._listener = new Listener(settings);
 			},
 			// リセット処理
 			_reset: function() {
 				var board = this;
+				var listener = this._listener;
 				// 全てのマスを隠（無印）状態に戻す
-				this._each( function(idx) {
+				// イベントを活性化する
+				board._each(function(idx) {
 					board._setState(idx, Board._STATE_NOT_MARKED);
+					$(this)
+					.unbind("")
+					.mousedown(function(ev) {
+						listener._onCellMouseDown(ev, idx);
+					})
+					.mouseover(function(ev) {
+						listener._onCellMouseOver(ev, idx);
+					})
+					.mouseout(function(ev) {
+						listener._onCellMouseOut(ev, idx);
+					})
+					.mouseup(function(ev) {
+						listener._onCellMouseUp(ev, idx);
+					});
 				});
+			},
+			_stop: function() {
+				// イベントを非活性化する
+				this._$cells.unbind("");
 			},
 			// 状態取得処理
 			_getState: function(idx) {
@@ -619,8 +583,40 @@
 				// 盤面を描画
 				this._$target.html(this._generateHtml());
 				
-				// 盤面オブジェクトを作成
-				this._board = new Board(this._$target.find(".minesweeper-cells > span"));
+				// 盤面オブジェクトを作成し、イベントハンドラを登録
+				var game = this;
+				this._board = new Board(
+					this._$target.find(".minesweeper-cells > span"),
+					{
+						onCellLeftMouseDown: function(idx) {
+							game._onCellLeftMouseDown(idx);
+						},
+						onCellLeftMouseOver: function(idx) {
+							game._onCellLeftMouseOver(idx);
+						},
+						onCellLeftMouseOut: function(idx) {
+							game._onCellLeftMouseOut(idx);
+						},
+						onCellLeftMouseUp: function(idx) {
+							game._onCellLeftMouseUp(idx);
+						},
+						onCellRightMouseDown: function(idx) {
+							game._onCellRightMouseDown(idx);
+						},
+						onCellBothMouseDown: function(idx) {
+							game._onCellBothMouseDown(idx);
+						},
+						onCellBothMouseOver: function(idx) {
+							game._onCellBothMouseOver(idx);
+						},
+						onCellBothMouseOut: function(idx) {
+							game._onCellBothMouseOut(idx);
+						},
+						onCellBothMouseUp: function(idx) {
+							game._onCellBothMouseUp(idx);
+						}
+					}
+				);
 				// 残り地雷数表示欄を取得
 				this._$txtMines = this._$target.find(".minesweeper-mines");
 				// タイマーオブジェクトを作成
@@ -883,42 +879,11 @@
 				this._unopened = this._cells - this._mines;
 				this._arrExplosion = [];
 				
-				// 盤面のリセット
+				// 盤面のリセット・イベント活性化
 				this._board._reset();
 				// 残り地雷数の初期表示
 				this._$txtMines.text(this._mines);
 				
-				// 盤面のクリックイベントにメソッドを登録
-				var game = this;
-				$(this._board)
-					.unbind("")
-					.bind("cell_left_mousedown", function(ev, idx) {
-						game._onCellLeftMouseDown(idx);
-					})
-					.bind("cell_left_mouseover", function(ev, idx) {
-						game._onCellLeftMouseOver(idx);
-					})
-					.bind("cell_left_mouseout", function(ev, idx) {
-						game._onCellLeftMouseOut(idx);
-					})
-					.bind("cell_left_mouseup", function(ev, idx) {
-						game._onCellLeftMouseUp(idx);
-					})
-					.bind("cell_right_mousedown", function(ev, idx) {
-						game._onCellRightMouseDown(idx);
-					})
-					.bind("cell_both_mousedown", function(ev, idx) {
-						game._onCellBothMouseDown(idx);
-					})
-					.bind("cell_both_mouseover", function(ev, idx) {
-						game._onCellBothMouseOver(idx);
-					})
-					.bind("cell_both_mouseout", function(ev, idx) {
-						game._onCellBothMouseOut(idx);
-					})
-					.bind("cell_both_mouseup", function(ev, idx) {
-						game._onCellBothMouseUp(idx);
-					});
 			},
 			// ゲーム開始処理
 			_startGame: function(startIdx) {
@@ -949,9 +914,8 @@
 					this._$txtTimer.stopTime();
 				}
 				
-				// 盤面のクリックイベントハンドラを解除
-				$(this._board)
-					.unbind("");
+				// 盤面のイベント非活性化
+				this._board._stop();
 			},
 			// ゲームクリア処理
 			_gameClear: function() {
