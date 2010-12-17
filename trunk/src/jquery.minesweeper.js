@@ -222,6 +222,7 @@
 			// 初期化処理
 			_init: function(target, settings) {
 				this._$cells = target;
+				this._states = {};
 				this._listener = new Listener(settings);
 			},
 			// リセット処理
@@ -254,15 +255,13 @@
 			},
 			// 状態取得処理
 			_getState: function(idx) {
-				return this._$cells
-							.eq(idx)
-							.data("state");
+				return this._states[idx];
 			},
 			// 状態設定処理
 			_setState: function(idx, state) {
+				this._states[idx] = state;
 				this._$cells
 					.eq(idx)
-					.data("state", state)
 					.removeClass()
 					.addClass(Board._STATE_CLASS + state);
 			},
