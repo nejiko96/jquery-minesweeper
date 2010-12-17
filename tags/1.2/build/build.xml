@@ -1,0 +1,194 @@
+<project name="jquery-minesweeper" default="all" basedir=".">
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="ant-contrib-0.6.jar"/>
+		</classpath>
+	</taskdef>
+
+	<loadfile failonerror="no" srcFile="../version.txt" property="release.version">
+		<filterchain><striplinebreaks/></filterchain>
+	</loadfile>
+
+	<property name="release.filename" value="jquery-minesweeper-${release.version}" />
+
+	<property name="dist.dir" value="dist/${release.filename}/" />
+	<property name="base.dir" value="../" />
+	<property name="src.dir" value="${base.dir}/src/" />
+	<property name="theme.dir" value="${base.dir}/theme/" />
+	<property name="lib.dir" value="${base.dir}/lib/" />
+	<property name="demo.dir" value="${base.dir}/demo/" />
+
+	<property name="concatenated" value="jquery.minesweeper-${release.version}.min" />
+
+	<property description="Google Closure" name="closure-jar" value="compiler.jar" />
+
+	<target name="all" 
+		depends="clean, copy, replace-version, minify, prepend-header, concatenate, zip"
+	>
+	</target>
+
+	<target
+		description="Clean working folder"
+		name="clean"
+	>
+	 	<delete dir="dist" />
+    </target>
+
+	<target
+		description="Copy needed folders"
+		name="copy"
+	>
+		<echo message="Copying files" />
+
+		<mkdir dir="${dist.dir}" />
+
+		<copy overwrite="true" todir="${dist.dir}/js/i18n">
+			<fileset dir="${src.dir}/i18n" />
+		</copy>
+
+		<copy overwrite="true" todir="${dist.dir}/css/">
+			<fileset dir="${theme.dir}/" />
+			<mapper type="glob" from="*.css" to="*-${release.version}.css" />
+		</copy>
+
+		<copy overwrite="true" todir="${dist.dir}/css/">
+			<fileset dir="${theme.dir}/" />
+			<mapper type="glob" from="*.png" to="*.png" />
+		</copy>
+		
+		<copy overwrite="true" todir="${dist.dir}/js/">
+			<fileset dir="${lib.dir}/" includes="jquery-*.min.js"/>
+		</copy>
+
+		<copy overwrite="true" todir="${dist.dir}" >
+			<fileset dir="${demo.dir}/" includes="index.html" />
+		</copy>
+
+		<copy overwrite="true" todir="${dist.dir}/src/">
+			<fileset dir="${src.dir}/" />
+			<fileset dir="${lib.dir}/" includes="jquery.blockUI*.js, jquery.timers*.js" />
+		</copy>
+
+		<echo message="Files copied." />
+	</target>
+
+	<target
+		name="replace-version"
+	>
+		<replaceregexp
+			match="@VERSION"
+			replace="${release.version}"
+			flags="g"
+			encoding="UTF-8"
+		>
+		    <fileset dir="${dist.dir}/src/" includes="jquery.minesweeper.js"/>
+			<fileset dir="${dist.dir}/" includes="index.html"/>
+		</replaceregexp>
+
+		<echo message="Replaced all @VERSION to ${release.version}." />
+
+		<!--
+		<exec executable="svndate.sh" outputproperty="date" />
+		-->
+		<tstamp>
+			<format property="date" pattern="yyyy/MM/dd" />
+		</tstamp>
+		<replaceregexp
+			match="@DATE"
+			replace="${date}"
+			flags="g"
+			encoding="UTF-8"
+		>
+		    <fileset dir="${dist.dir}/src/" includes="jquery.minesweeper.js"/>
+		</replaceregexp>
+
+		<echo message="Replaced all @DATE to ${date}." />
+		
+		<copy overwrite="true" todir="${dist.dir}/js/">
+			<fileset dir="${dist.dir}/src/" includes="jquery.minesweeper.js" />
+			<mapper type="glob" from="*.js" to="*-${release.version}.js" />
+		</copy>
+
+		<echo message="jquery.minesweeper.js copied " />
+		
+	</target>
+
+	<target
+		description="Remove all comments and whitespace, no compression, great in combination with GZip"
+		name="minify"
+	>
+		<echo message="Building minified" />
+
+		<mkdir dir="${dist.dir}/min/" />
+
+		<apply executable="java" parallel="false">
+			<fileset dir="${dist.dir}/src" includes="*.js" />
+			<arg line="-jar" />
+			<arg path="${closure-jar}" />
+			<arg value="--warning_level" />
+			<arg value="QUIET" />
+			<arg value="--js_output_file" />
+			<targetfile />
+			<arg value="--js" />
+			<mapper type="glob" from="*.js" to="${dist.dir}/min/*.min.js" />
+		</apply>
+
+		<echo message="Minified built." />
+	</target>
+
+
+	<target
+		name="prepend-header"
+	>
+		<copy todir="${dist.dir}/headers/">
+			<fileset dir="${dist.dir}/src/" includes="*.js" />
+		</copy>
+		<replaceregexp match="^(\/\*.*?\*\/\s).+" replace="\1" flags="s" encoding="UTF-8" >
+		    <fileset dir="${dist.dir}/headers/" includes="*.js"/>
+		</replaceregexp>
+		<for param="file">
+			<path><fileset dir="${dist.dir}/min/" includes="*.js" /></path>
+			<sequential>
+				<propertyregex override="yes" property="target" input="@{file}" regexp=".*[\\/](.+)\.min\.js$" replace="\1"/>
+				<concat destfile="${dist.dir}/min-headered/${target}.min.js">
+					<header file="${dist.dir}/headers/${target}.js" />
+					<fileset file="@{file}" />
+				</concat>
+			</sequential>
+		</for>
+
+		<delete dir="${dist.dir}/headers/" />
+		<delete dir="${dist.dir}/min" />
+		<delete dir="${dist.dir}/src" />
+		
+	</target>
+
+	<target 
+		name="concatenate"
+	>
+		<echo message="Building concatenated" />
+		
+		<delete file="${dist.dir}/js/${concatenated}.js" />
+
+		<concat destfile="${dist.dir}/js/${concatenated}.js" encoding="UTF-8">
+			<filelist dir="${dist.dir}/min-headered" files="jquery.minesweeper.min.js" />
+			<fileset dir="${dist.dir}/min-headered" includes="jquery.blockUI*.min.js, jquery.timers*.min.js" />
+		</concat>
+		
+		<delete dir="${dist.dir}/min-headered/" />
+		
+		<echo message="Concatenated built." />
+	</target>
+
+	<target
+		description="Zip the package"
+		name="zip"
+	>
+		<zip destfile="${dist.dir}/../${release.filename}.zip">
+			<zipfileset dir="dist/" />
+		</zip>
+	</target>
+
+
+</project>

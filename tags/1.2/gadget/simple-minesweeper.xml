@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+<ModulePrefs
+  title="__MSG_module_title__"
+  title_url="http://code.google.com/p/jquery-minesweeper/"
+  directory_title="シンプル マインスイーパ (Simple Minesweeper)"
+  description="__MSG_module_description__"
+  screenshot="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/img/screenshot.png"
+  thumbnail="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/img/thumbnail.png"
+  category="funandgames"
+  author="nejiko"
+  author_affiliation="__MSG_author_affiliation__"
+  author_location="__MSG_author_location__"
+  author_email="nejiko2006.feedback+minesweeper@gmail.com"
+  author_link="http://nejiko-blog.blogspot.com/"
+  author_aboutme="__MSG_author_aboutme__"
+  author_quote="__MSG_author_quote__"
+>
+  <Require feature="dynamic-height"/>
+  <Locale messages="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/i18n/ALL_ALL.xml" />
+  <Locale lang="ja" messages="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/i18n/ja_ALL.xml" />
+</ModulePrefs>
+<UserPref name="level" display_name="__MSG_pref_name_level__" default_value="easy" datatype="enum">
+  <EnumValue value="easy" display_value="__MSG_pref_level_easy__" />
+  <EnumValue value="medium" display_value="__MSG_pref_level_medium__" />
+  <EnumValue value="hard" display_value="__MSG_pref_level_hard__" />
+</UserPref>
+<Content type="html" preferred_height="333" ><![CDATA[
+<link type="text/css" href="http://jquery-minesweeper.googlecode.com/svn/trunk/theme/jquery.minesweeper.small.css" rel="stylesheet" charset="UTF-8" />
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+<script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/lib/jquery.blockUI.js"></script>
+<script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/lib/jquery.timers-1.2.js"></script>
+<script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/src/jquery.minesweeper.js"></script>
+<script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/src/i18n/jquery.minesweeper-__MSG_lang__.js"></script>
+<script type="text/javascript" >
+  $(function() {
+    var prefs = new _IG_Prefs();
+    var userPrefLevel = prefs.getString("level");
+
+    $("#minesweeper1").minesweeper({ level : userPrefLevel });
+
+    _IG_AdjustIFrameHeight();
+  });
+</script>
+<div id="minesweeper1"></div>
+]]></Content>
+</Module>

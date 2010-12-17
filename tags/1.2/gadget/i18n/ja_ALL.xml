@@ -1,0 +1,13 @@
+<messagebundle>
+  <msg name="module_title">シンプル マインスイーパ</msg> 
+  <msg name="module_description">シンプルなマインスイーパです。右クリック・左右クリックに対応しています。</msg> 
+  <msg name="author_affiliation">斑鳩プロジェクト</msg>
+  <msg name="author_location">東京,日本</msg> 
+  <msg name="author_aboutme">主婦</msg> 
+  <msg name="author_quote">案ずるより産むが小野やすし</msg> 
+  <msg name="pref_name_level">レベル</msg> 
+  <msg name="pref_level_easy">初級 (9x9)</msg> 
+  <msg name="pref_level_medium">中級 (16x16)</msg> 
+  <msg name="pref_level_hard">上級 (30x16)</msg> 
+  <msg name="lang">ja</msg> 
+</messagebundle>
