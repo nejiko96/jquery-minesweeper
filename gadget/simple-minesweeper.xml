@@ -30,7 +30,9 @@
   <EnumValue value="" display_value="__MSG_pref_theme_large__" />
 </UserPref>
 <Content type="html" preferred_height="333" ><![CDATA[
-<link rel="stylesheet" type="text/css" charset="UTF-8" id="minesweeper-css" />
+<link rel="stylesheet" type="text/css" charset="UTF-8" id="minesweeper-css" 
+      href="http://jquery-minesweeper.googlecode.com/svn/trunk/theme/jquery.minesweeper.small.css"
+/>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 <script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/lib/jquery.blockUI.js"></script>
 <script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/lib/jquery.timers-1.2.js"></script>
