@@ -46,7 +46,7 @@
     var userPrefTheme = prefs.getString("theme");
     var cssUrl;
     if (userPrefTheme == "large") {
-      cssUrl = "http://jquery-minesweeper.googlecode.com/svn/trunk/theme/jquery.minesweeper.css"
+      cssUrl = "http://jquery-minesweeper.googlecode.com/svn/trunk/theme/jquery.minesweeper.css";
       $("#minesweeper-css").attr({ href : cssUrl });
     }
 
