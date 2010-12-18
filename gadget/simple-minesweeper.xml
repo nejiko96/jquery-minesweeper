@@ -3,7 +3,7 @@
 <ModulePrefs
   title="__MSG_module_title__"
   title_url="http://code.google.com/p/jquery-minesweeper/"
-  directory_title="シンプル マインスイーパ (Simple Minesweeper)"
+  directory_title="__MSG_module_directory_title__"
   description="__MSG_module_description__"
   screenshot="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/img/screenshot.png"
   thumbnail="http://jquery-minesweeper.googlecode.com/svn/trunk/gadget/img/thumbnail.png"
@@ -25,8 +25,12 @@
   <EnumValue value="medium" display_value="__MSG_pref_level_medium__" />
   <EnumValue value="hard" display_value="__MSG_pref_level_hard__" />
 </UserPref>
+<UserPref name="theme" display_name="__MSG_pref_name_theme__" default_value="small" datatype="enum">
+  <EnumValue value=",small" display_value="__MSG_pref_theme_small__" />
+  <EnumValue value="" display_value="__MSG_pref_theme_large__" />
+</UserPref>
 <Content type="html" preferred_height="333" ><![CDATA[
-<link type="text/css" href="http://jquery-minesweeper.googlecode.com/svn/trunk/theme/jquery.minesweeper.small.css" rel="stylesheet" charset="UTF-8" />
+<link rel="stylesheet" type="text/css" charset="UTF-8" id="minesweeper-css" />
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 <script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/lib/jquery.blockUI.js"></script>
 <script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/lib/jquery.timers-1.2.js"></script>
@@ -34,9 +38,13 @@
 <script type="text/javascript" src="http://jquery-minesweeper.googlecode.com/svn/trunk/src/i18n/jquery.minesweeper-__MSG_lang__.js"></script>
 <script type="text/javascript" >
   $(function() {
+
     var prefs = new _IG_Prefs();
     var userPrefLevel = prefs.getString("level");
+    var userPrefTheme = prefs.getString("theme");
+    var cssUrl = "http://jquery-minesweeper.googlecode.com/svn/trunk/theme/jquery.minesweeper" + userPrefTheme + ".css"
 
+    $("#minesweeper-css").attr({ href : cssUrl });
     $("#minesweeper1").minesweeper({ level : userPrefLevel });
 
     _IG_AdjustIFrameHeight();
