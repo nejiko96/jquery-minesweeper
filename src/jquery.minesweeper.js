@@ -333,8 +333,8 @@
 				if (this._isFixed(idx)) {
 					return;
 				}
-				var $cell = this._$cells.eq(idx);
-				$cell
+				this._$cells
+					.eq(idx)
 					.removeClass()
 					.addClass(Board._STATE_CLASS + Board._STATE_VACANT);
 			},
@@ -343,9 +343,9 @@
 				if (this._isFixed(idx)) {
 					return;
 				}
-				var $cell = this._$cells.eq(idx);
-				var state = $cell.data("state");
-				$cell
+				var state = this._getState(idx);
+				this._$cells
+					.eq(idx)
 					.removeClass()
 					.addClass(Board._STATE_CLASS + state);
 			},
@@ -1042,7 +1042,6 @@
 						surroundings.push(y2 + x2);
 					});
 				});
-//console.log(idx + ":surrounding:" + surroundings);
 				return surroundings;
 			},
 			// 近傍のマスの配列を求める
@@ -1066,7 +1065,6 @@
 					});
 				});
 				
-//console.log(idx + ":neighbor:" + neighbors);
 				return neighbors;
 			}
 		}
