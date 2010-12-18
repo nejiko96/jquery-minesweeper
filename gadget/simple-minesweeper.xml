@@ -25,8 +25,8 @@
   <EnumValue value="medium" display_value="__MSG_pref_level_medium__" />
   <EnumValue value="hard" display_value="__MSG_pref_level_hard__" />
 </UserPref>
-<UserPref name="theme" display_name="__MSG_pref_name_theme__" default_value="small" datatype="enum">
-  <EnumValue value=",small" display_value="__MSG_pref_theme_small__" />
+<UserPref name="theme" display_name="__MSG_pref_name_theme__" default_value=".small" datatype="enum">
+  <EnumValue value=".small" display_value="__MSG_pref_theme_small__" />
   <EnumValue value="" display_value="__MSG_pref_theme_large__" />
 </UserPref>
 <Content type="html" preferred_height="333" ><![CDATA[
