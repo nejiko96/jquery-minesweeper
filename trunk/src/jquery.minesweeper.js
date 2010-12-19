@@ -369,7 +369,10 @@
 		MineLocation.prototype,
 		{
 			// 初期化処理
-			_init: function(cells, mines, startIdx) {
+			_init: function(cells, mines, excludes) {
+			
+				// 自分自身を待避
+				var location = this;
 			
 				// 地雷位置の配列を「"."」で初期化
 				this._arrMines = ["."];
@@ -379,30 +382,50 @@
 				// 空きマス数を初期化
 				this._emptyCells = cells;
 				
-				// 最初に選んだマスに地雷が置かれないようにする
-				this._insert(startIdx);
+				$.each(excludes, function(i, idx) {
+					// 最初に選んだマスに地雷が置かれないようにする
+					location._put(idx);
+				});
 				
 				// 指定された数の地雷を配置する
 				for (; mines > 0; --mines) {
 					this._insert();
 				}
 				
-				// 最初に選んだマスから地雷を取り除く
-				this._remove(startIdx);
+				$.each(excludes, function(i, idx) {
+					// 最初に選んだマスに地雷が置かれないようにする
+					location._remove(idx);
+				});
 				
 				// 最後の要素「"."」を取り除く
 				this._arrMines.pop();
 			},
-			// 地雷追加処理
-			_insert: function(pos) {
+			// 地雷配置処理
+			_put: function(pos) {
 			
-				// MineLocationオブジェクトをローカル変数に退避
+				// 自分自身をローカル変数に退避
+				var location = this;
+				
+				// 地雷がインデックスの昇順に並ぶよう、配列に挿入する。
+				$.each(this._arrMines, function(i, val) {
+					if (val === "." || val > pos) {
+						// 終端に達するか、より後方の地雷が出現したら、配列に挿入
+						location._arrMines.splice(i, 0, pos);
+						location._mapMines[pos] = true;
+						location._emptyCells--;
+						return false;
+					}
+				});
+				
+			},
+			// 地雷追加処理
+			_insert: function() {
+			
+				// 自分自身をローカル変数に退避
 				var location = this;
 			
-				if (arguments.length < 1) {
-					// マスの指定がない場合、空いているマスの中からランダム選ぶ
-					pos = Math.floor(Math.random() * this._emptyCells);
-				}
+				// 空いているマスの中からランダム選ぶ
+				pos = Math.floor(Math.random() * this._emptyCells);
 				
 				// 地雷がインデックスの昇順に並ぶよう、配列に挿入する。
 				$.each(this._arrMines, function(i, val) {
@@ -418,6 +441,7 @@
 						++pos;
 					}
 				});
+				
 			},
 			// 地雷削除処理
 			_remove: function(pos) {
@@ -885,13 +909,13 @@
 				
 			},
 			// ゲーム開始処理
-			_startGame: function(startIdx) {
+			_startGame: function(idx) {
 			
 				// 地雷位置を初期化
 				this._mineLocation = new MineLocation(
 					this._cells,
 					this._mines,
-					startIdx
+					this._neighbors(idx)
 				);
 				if ($.timer) {
 					// タイマーを開始
