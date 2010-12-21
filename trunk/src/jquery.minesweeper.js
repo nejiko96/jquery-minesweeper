@@ -3,7 +3,6 @@
  * Version: @VERSION
  * Date: @DATE
  * @requires jQuery v1.4.4 or later
- * @requires jQuery.blockUI (optional)
  * @requires jQuery.timers (optional)
  *
  * Copyright (c) 2010 H.Nakatani
@@ -81,6 +80,14 @@
 					listener._buttonKey = 0;
 				});
 			},
+			// リセット処理
+			_reset: function() {
+				this._triggers = this._settings;
+			},
+			// 停止処理
+			_stop: function() {
+				this._triggers = Listener._DEFAULT_SETTINGS;
+			},
 			// マスのマウスダウン時処理
 			_onCellMouseDown: function(ev, idx) {
 			
@@ -112,11 +119,11 @@
 				
 				// マウスダウンイベントをトリガーする
 				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
-					this._settings.onCellLeftMouseDown(idx);
+					this._triggers.onCellLeftMouseDown(idx);
 				} else if (this._buttonKey === Listener._EVENT_BUTTON_RIGHT) {
-					this._settings.onCellRightMouseDown(idx);
+					this._triggers.onCellRightMouseDown(idx);
 				} else if (this._buttonKey === Listener._EVENT_BUTTON_BOTH) {
-					this._settings.onCellBothMouseDown(idx);
+					this._triggers.onCellBothMouseDown(idx);
 				}
 			},
 			// マスのマウスオーバー時処理
@@ -129,11 +136,11 @@
 				
 				// 押下中のボタンに応じた処理を呼出す
 				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
-					this._settings.onCellLeftMouseOver(idx);
+					this._triggers.onCellLeftMouseOver(idx);
 				} else if (this._buttonKey === Listener._EVENT_BUTTON_RIGHT) {
-					this._settings.onCellRightMouseOver(idx);
+					this._triggers.onCellRightMouseOver(idx);
 				} else if (this._buttonKey === Listener._EVENT_BUTTON_BOTH) {
-					this._settings.onCellBothMouseOver(idx);
+					this._triggers.onCellBothMouseOver(idx);
 				}
 			},
 			// マスのマウスアウト時処理
@@ -146,11 +153,11 @@
 				
 				// 押下中のボタンに応じた処理を呼出す
 				if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
-					this._settings.onCellLeftMouseOut(idx);
+					this._triggers.onCellLeftMouseOut(idx);
 				} else if (this._buttonKey === Listener._EVENT_BUTTON_RIGHT) {
-					this._settings.onCellRightMouseOut(idx);
+					this._triggers.onCellRightMouseOut(idx);
 				} else if (this._buttonKey === Listener._EVENT_BUTTON_BOTH) {
-					this._settings.onCellBothMouseOut(idx);
+					this._triggers.onCellBothMouseOut(idx);
 				}
 			},
 			// マスのマウスアップ時処理
@@ -169,11 +176,11 @@
 
 				// 押下中のボタンに応じた処理を呼出す
 				if (buttonKey === Listener._EVENT_BUTTON_LEFT) {
-					this._settings.onCellLeftMouseUp(idx);
+					this._triggers.onCellLeftMouseUp(idx);
 				} else if (buttonKey === Listener._EVENT_BUTTON_RIGHT) {
-					this._settings.onCellRightMouseUp(idx);
+					this._triggers.onCellRightMouseUp(idx);
 				} else if (buttonKey === Listener._EVENT_BUTTON_BOTH) {
-					this._settings.onCellBothMouseUp(idx);
+					this._triggers.onCellBothMouseUp(idx);
 				}
 			}
 		}
@@ -224,15 +231,9 @@
 				this._$cells = target;
 				this._states = {};
 				this._listener = new Listener(settings);
-			},
-			// リセット処理
-			_reset: function() {
-				var board = this;
 				var listener = this._listener;
-				// 全てのマスを隠（無印）状態に戻す
-				// イベントを活性化する
-				board._each(function(idx) {
-					board._setState(idx, Board._STATE_NOT_MARKED);
+				// イベントを登録する
+				this._each(function(idx) {
 					$(this)
 					.unbind("")
 					.mousedown(function(ev) {
@@ -249,9 +250,20 @@
 					});
 				});
 			},
+			// リセット処理
+			_reset: function() {
+				var board = this;
+				// 全てのマスを隠（無印）状態に戻す
+				board._each(function(idx) {
+					board._setState(idx, Board._STATE_NOT_MARKED);
+				});
+				// イベントを活性化する
+				this._listener._reset();
+			},
+			// 停止処理
 			_stop: function() {
 				// イベントを非活性化する
-				this._$cells.unbind("");
+				this._listener._stop();
 			},
 			// 状態取得処理
 			_getState: function(idx) {
@@ -598,10 +610,6 @@
 			},
 			// 盤面表示処理
 			_show: function() {
-				// 対象要素をブロック
-				if ($.blockUI) {
-					this._$target.block();
-				}
 
 				// 盤面を描画
 				this._$target.html(this._generateHtml());
@@ -660,10 +668,6 @@
 				// ゲームの初期化
 				this._resetGame();
 				
-				// 対象要素のブロック解除
-				if ($.blockUI) {
-					this._$target.unblock();
-				}
 			},
 			// HTML生成処理
 			_generateHtml: function() {
@@ -874,19 +878,10 @@
 			},
 			// ゲーム再開処理
 			_restart: function() {
-			
-				// 対象要素をブロック
-				if ($.blockUI) {
-					this._$target.block();
-				}
-				
+
 				// ゲームのリセット
 				this._resetGame();
-				
-				// 対象要素のブロック解除
-				if ($.blockUI) {
-					this._$target.unblock();
-				}
+
 			},
 			// ゲームリセット処理
 			_resetGame: function() {
@@ -1045,31 +1040,10 @@
 			},
 			// 周囲のマスの配列を求める
 			_surroundings: function(idx) {
-			
-				var game = this;
-				var surroundings = [];
-				
-				var x1 = idx % this._width;
-				var y1 = idx - x1;
-				
-				$.each([y1 - game._width, y1, y1 + game._width], function(i, y2) {
-					if (y2 < 0 || y2 >= game._cells) {
-						return;
-					}
-					$.each([x1 - 1,  x1, x1 + 1], function(i, x2) {
-						if (x2 === x1 && y2 === y1) {
-							return;
-						}
-						if (x2 < 0 || x2 >= game._width) {
-							return;
-						}
-						surroundings.push(y2 + x2);
-					});
-				});
-				return surroundings;
+				return this._neighbors(idx, true);
 			},
 			// 近傍のマスの配列を求める
-			_neighbors: function(idx) {
+			_neighbors: function(idx, notme) {
 			
 				var game = this;
 				var neighbors = [];
@@ -1082,6 +1056,9 @@
 						return;
 					}
 					$.each([x1 - 1,  x1, x1 + 1], function(i, x2) {
+						if (notme && y2 === y1 && x2 === x1) {
+							return;
+						}
 						if (x2 < 0 || x2 >= game._width) {
 							return;
 						}

@@ -67,7 +67,7 @@
 
 		<copy overwrite="true" todir="${dist.dir}/src/">
 			<fileset dir="${src.dir}/" />
-			<fileset dir="${lib.dir}/" includes="jquery.blockUI*.js, jquery.timers*.js" />
+			<fileset dir="${lib.dir}/" includes="jquery.timers*.js" />
 		</copy>
 
 		<echo message="Files copied." />
@@ -173,7 +173,7 @@
 
 		<concat destfile="${dist.dir}/js/${concatenated}.js" encoding="UTF-8">
 			<filelist dir="${dist.dir}/min-headered" files="jquery.minesweeper.min.js" />
-			<fileset dir="${dist.dir}/min-headered" includes="jquery.blockUI*.min.js, jquery.timers*.min.js" />
+			<fileset dir="${dist.dir}/min-headered" includes="jquery.timers*.min.js" />
 		</concat>
 		
 		<delete dir="${dist.dir}/min-headered/" />
