@@ -235,7 +235,6 @@
 				// イベントを登録する
 				this._each(function(idx) {
 					$(this)
-					.unbind("")
 					.mousedown(function(ev) {
 						listener._onCellMouseDown(ev, idx);
 					})
