@@ -412,7 +412,7 @@
 			// 全ての地雷／旗に対してコールバック処理を呼出す
 			_eachMineFlag: function(callback) {
 				$.each(this._mineFlags, callback);
-			},
+			}
 		}
 	);
 
