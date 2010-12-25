@@ -218,22 +218,33 @@
 			// マスの状態－開（爆発）
 			_STATE_EXPLOSION: '1a',
 			// マスの状態－開（ミス）
-			_STATE_MISTAKE: '1b'
+			_STATE_MISTAKE: '1b',
+			
+			// 地雷あり
+			_HAS_MINE: 1,
+			// 旗あり
+			_HAS_FLAG: 2
 		}
 	);
-
+	
 	// マインスイーパ盤面クラス－メソッド
 	$.extend(
 		Board.prototype,
 		{
 			// 初期化処理
 			_init: function(target, settings) {
+			
+				// マスのDOMオブジェクトを初期化
 				this._$cells = target;
-				this._states = {};
-				this._listener = new Listener(settings);
-				var listener = this._listener;
+				
+				// マスの状態の初期化文字列を生成
+				var str = new Array(this._$cells.length + 1).join("'" + Board._STATE_NOT_MARKED + "',");
+				this._initStateStr = "[" + str.slice(0, -1) + "]";
+				
+				// リスナを初期化
+				var listener = new Listener(settings);
 				// イベントを登録する
-				this._each(function(idx) {
+				this._$cells.each(function(idx) {
 					$(this)
 					.mousedown(function(ev) {
 						listener._onCellMouseDown(ev, idx);
@@ -248,17 +259,26 @@
 						listener._onCellMouseUp(ev, idx);
 					});
 				});
+				this._listener = listener;
 			},
 			// リセット処理
 			_reset: function() {
 				// 全てのマスを隠（無印）状態に戻す
-				var initStates = new Array(this._$cells.length + 1).join("'" + Board._STATE_NOT_MARKED + "',");
-				this._states = eval("[" + initStates.slice(0, -1) + "]");
+				this._states = eval(this._initStateStr);
 				this._$cells
 					.removeClass()
 					.addClass(Board._STATE_CLASS + Board._STATE_NOT_MARKED);
+				// 地雷と旗のマップを初期化
+				this._mineFlags = {};
 				// イベントを活性化する
 				this._listener._reset();
+				this._started = false;
+			},
+			// 開始処理
+			_start: function(mines, excludes) {
+				// 地雷を生成する
+				new MineGenerator(this, mines)._generate(excludes);
+				this._started = true;
 			},
 			// 停止処理
 			_stop: function() {
@@ -308,10 +328,12 @@
 			// マスを旗印に設定する
 			_setFlagged: function(idx) {
 				this._setState(idx, Board._STATE_FLAGGED);
+				this._setMineFlag(idx, Board._HAS_FLAG);
 			},
 			// マスを？印に設定する
 			_setUncertain: function(idx) {
 				this._setState(idx, Board._STATE_UNCERTAIN);
+				this._unsetMineFlag(idx, Board._HAS_FLAG);
 			},
 			// 周囲の地雷数を設定する
 			_setMineCount: function(idx, count) {
@@ -361,115 +383,97 @@
 					.removeClass()
 					.addClass(Board._STATE_CLASS + state);
 			},
-			// 全てのマスに対してコールバック処理を呼出す
-			_each: function(callback) {
-				$.each(this._$cells, callback);
-			}
+			// 地雷と旗の状態を取得する
+			_getMineFlag: function(idx) {
+				var mineFlag = this._mineFlags[idx];
+				return mineFlag === undefined ? 0 : mineFlag;
+			},
+			// 地雷と旗の状態を設定する
+			_setMineFlag: function(idx, val) {
+				if (this._mineFlags[idx] === undefined) {
+					this._mineFlags[idx] = val;
+				} else {
+					this._mineFlags[idx] |= val;
+				}
+			},
+			// 地雷と旗の状態を解除する
+			_unsetMineFlag: function(idx, val) {
+				if (this._mineFlags[idx] !== undefined) {
+					this._mineFlags[idx] &= ~val;
+					if (!this._mineFlags[idx]) {
+						delete this._mineFlags[idx];
+					}
+				}
+			},
+			// 地雷の有無を返却する
+			_hasMine: function(idx) {
+				return this._getMineFlag(idx) & Board._HAS_MINE;
+			},
+			// 全ての地雷／旗に対してコールバック処理を呼出す
+			_eachMineFlag: function(callback) {
+				$.each(this._mineFlags, callback);
+			},
 		}
 	);
 
 	/**
-	 * 地雷位置クラス
+	 * 地雷生成クラス
 	 * @constructor
 	 */
-	var MineLocation = function(cells, mines) {
-		this._init(cells, mines);
+	var MineGenerator = function(board, mines) {
+		this._init(board, mines);
 	};
 	
-	// 地雷位置クラス－定数
-	$.extend(
-		MineLocation,
-		{
-			// 地雷あり
-			_HAS_MINE: 1,
-			// 旗あり
-			_HAS_FLAG: 2,
-			// 地雷を特定
-			_MARKED: 3
-		}
-	);
 
-	// 地雷位置クラス－メソッド
+	// 地雷生成クラス－メソッド
 	$.extend(
-		MineLocation.prototype,
+		MineGenerator.prototype,
 		{
 			// 初期化処理
-			_init: function(cells, mines) {
-				this._cells = cells;
+			_init: function(board, mines) {
+				this._board = board;
 				this._mines = mines;
 			},
-			// リセット処理
-			_reset: function() {
-				// 地雷／旗のマップを空で初期化
-				this._mapMines = {};
-				// 地雷の配列をnullで初期化
-				this._arrMines = null;
-			},
-			// ゲーム開始処理
-			_start: function(excludes) {
+			// 地雷生成処理
+			_generate: function(excludes) {
 			
 				// 自分自身を待避
 				var location = this;
 				
-				// 地雷位置の配列を「"."」で初期化
-				this._arrMines = ["."];
+				// 予約済の位置の配列を["."]で初期化
+				this._reserved = ["."];
 				// 空きマス数を初期化
-				this._emptyCells = this._cells;
-				// 配置する地雷数を取得
-				var mines = this._mines;
+				this._emptyCells = this._board._$cells.length;
 
 				$.each(excludes, function(i, idx) {
 					// 最初に選んだマスに地雷が置かれないようにする
 					location._reserve(idx);
 				});
 				
+				// 配置する地雷数を取得
+				var mines = this._mines;
 				// 指定された数の地雷を配置する
 				for (; mines > 0; --mines) {
 					location._insert();
 				}
 				
-				$.each(excludes, function(i, idx) {
-					// 最初に選んだマスに地雷が置かれないようにする
-					location._cancel(idx);
-				});
-				
-				// 最後の要素「"."」を取り除く
-				this._arrMines.pop();
-			},
-			_started: function() {
-				return this._arrMines !== null;
 			},
 			// 空きマス予約処理
-			_reserve: function(pos) {
+			_reserve: function(idx) {
 			
 				// 自分自身をローカル変数に退避
 				var location = this;
 				
 				// 地雷がインデックスの昇順に並ぶよう、配列に挿入する。
-				$.each(this._arrMines, function(i, val) {
-					if (val === "." || val > pos) {
+				$.each(this._reserved, function(i, val) {
+					if (val === "." || val > idx) {
 						// 終端に達するか、より後方の地雷が出現したら、配列に挿入
-						location._arrMines.splice(i, 0, pos);
+						location._reserved.splice(i, 0, idx);
 						location._emptyCells--;
 						return false;
 					}
 				});
 				
-			},
-			// 予約解除処理
-			_cancel: function(pos) {
-			
-				// MiniPositionオブジェクトをローカル変数に退避
-				var location = this;
-				
-				// 配列から該当する位置の地雷を除去
-				$.each(this._arrMines, function(i, val) {
-					if (val === pos) {
-						location._arrMines.splice(i, 1);
-						location._emptyCells++;
-						return false;
-					}
-				});
 			},
 			// 地雷追加処理
 			_insert: function() {
@@ -478,51 +482,23 @@
 				var location = this;
 			
 				// 空いているマスの中からランダム選ぶ
-				pos = Math.floor(Math.random() * this._emptyCells);
+				var idx = Math.floor(Math.random() * this._emptyCells);
 				
 				// 地雷がインデックスの昇順に並ぶよう、配列に挿入する。
-				$.each(this._arrMines, function(i, val) {
-					if (val === "." || val > pos) {
+				$.each(this._reserved, function(i, val) {
+					if (val === "." || val > idx) {
 						// 終端に達するか、より後方の地雷が出現したら、配列に挿入
-						location._arrMines.splice(i, 0, pos);
-						if (location._mapMines[pos]) {
-							location._mapMines[pos] |= MineLocation._HAS_MINE;
-						} else {
-							location._mapMines[pos] = MineLocation._HAS_MINE;
-						}
+						location._reserved.splice(i, 0, idx);
 						location._emptyCells--;
+						// 盤面に地雷をセット
+						location._board._setMineFlag(idx, Board._HAS_MINE);
 						return false;
 					} else {
 						// マスのインデックスをずらす
 						//（前方の地雷の分だけ番号がずれる）
-						++pos;
+						++idx;
 					}
 				});
-			},
-			// 旗を立てる
-			_flag: function(pos) {
-				if (this._mapMines[pos] === undefined) {
-					this._mapMines[pos] = MineLocation._HAS_FLAG;
-				} else {
-					this._mapMines[pos] |= MineLocation._HAS_FLAG;
-				}
-			},
-			// 旗を除去
-			_unflag: function(pos) {
-				if (this._mapMines[pos] !== undefined) {
-					this._mapMines[pos] &= ~MineLocation._HAS_FLAG;
-					if (!this._mapMines[pos]) {
-						delete this._mapMines[pos];
-					}
-				}
-			},
-			// 地雷有無判定
-			_hasMine: function(pos) {
-				return (this._mapMines[pos] & MineLocation._HAS_MINE);
-			},
-			// 指定された処理をそれぞれの地雷／旗について行う
-			_each: function(callback) {
-				return $.each(this._mapMines, callback);
 			}
 		}
 	);
@@ -595,12 +571,6 @@
 
 				// 盤面サイズの初期化
 				this._initSize();
-
-				// 地雷位置オブジェクトを初期化
-				this._mineLocation = new MineLocation(
-					this._cells,
-					this._mines
-				);
 				
 			},
 			// 盤面サイズ初期化処理
@@ -770,7 +740,7 @@
 			_onCellLeftMouseUp: function(idx) {
 			
 				// ゲームが始まっていない場合、開始する。
-				if (!this._mineLocation._started()) {
+				if (!this._board._started) {
 					this._startGame(idx);
 				}
 				
@@ -780,9 +750,9 @@
 				}
 				
 				// 地雷を選んだ場合
-				if (this._mineLocation._hasMine(idx)) {
+				if (this._board._hasMine(idx)) {
 					//ゲームオーバー
-					this._arrExplosion.push(idx);
+					this._explosion.push(idx);
 					this._gameOver();
 					return;
 				}
@@ -804,13 +774,11 @@
 				if (this._board._isNotMarked(idx)) {
 					//無印→旗
 					this._board._setFlagged(idx);
-					this._mineLocation._flag(idx);
 					mines = parseInt(this._$txtMines.text(), 10);
 					this._$txtMines.text(mines - 1);
 				} else if (this._board._isFlagged(idx)) {
 					//旗→不明
 					this._board._setUncertain(idx);
-					this._mineLocation._unflag(idx);
 					mines = parseInt(this._$txtMines.text(), 10);
 					this._$txtMines.text(mines + 1);
 				} else if (this._board._isUncertain(idx)) {
@@ -876,9 +844,9 @@
 				// 周囲の旗の数を初期化する
 				var flagCount = 0;
 				// 安全なマスのリストを初期化する
-				var arrSafe = [];
+				var safe = [];
 				// 爆発するマスのリストを初期化する
-				var arrExplosion = [];
+				var explosion = [];
 				
 				//隣接するマスを全て調べる
 				$.each(this._surroundings(idx), function(i, neighbor) {
@@ -887,22 +855,26 @@
 					if (game._board._isOpened(neighbor)) {
 						return;
 					}
+
+					// 地雷と旗の状態を取得する
+					var mineFlag = game._board._getMineFlag(neighbor);
+
 					// 旗が立っている場合
-					if (game._board._isFlagged(neighbor)) {
+					if (mineFlag & Board._HAS_FLAG) {
 						// 旗をカウントする
 						flagCount++;
 						return;
 					}
 					
 					//地雷がある場合
-					if (game._mineLocation._hasMine(neighbor)) {
+					if (mineFlag & Board._HAS_MINE) {
 						// 爆発マスのリストに加える
-						arrExplosion.push(neighbor);
+						explosion.push(neighbor);
 						return;
 					}
 					
 					//安全なマスのリストに加える
-					arrSafe.push(neighbor);
+					safe.push(neighbor);
 				});
 				
 				//隣接する地雷の数と旗の数が一致しなければ、何もしないで抜ける
@@ -911,14 +883,14 @@
 				}
 
 				// 安全なマスは開いておく
-				$.each(arrSafe, function(i, val) {
-					game._openSafe(val);
+				$.each(safe, function(i, idx) {
+					game._openSafe(idx);
 				});
 
 				// 地雷を選んでしまった場合
-				if (arrExplosion.length > 0) {
+				if (explosion.length > 0) {
 					//ゲームオーバー
-					this._arrExplosion = arrExplosion;
+					this._explosion = explosion;
 					this._gameOver();
 				}
 			},
@@ -932,9 +904,8 @@
 				this._$txtTimer.text("0");
 				
 				// ゲーム状態をクリア
-				this._mineLocation._reset();
 				this._unopened = this._cells - this._mines;
-				this._arrExplosion = [];
+				this._explosion = [];
 				
 				// 盤面のリセット・イベント活性化
 				this._board._reset();
@@ -946,7 +917,7 @@
 			_startGame: function(idx) {
 			
 				// 地雷位置を初期化
-				this._mineLocation._start(this._neighbors(idx));
+				this._board._start(this._mines, this._neighbors(idx));
 
 				// タイマーを開始
 				if ($.timer) {
@@ -980,9 +951,9 @@
 				this._stopGame();
 
 				// 地雷の位置に旗がない場合全て旗を立てる
-				this._mineLocation._each(function(pos, state) {
-					if (state === MineLocation._HAS_MINE) {
-						game._board._setFlagged(pos);
+				this._board._eachMineFlag(function(idx, mf) {
+					if (mf === Board._HAS_MINE) {
+						game._board._setFlagged(idx);
 					}
 				});
 				
@@ -1002,17 +973,17 @@
 				this._stopGame();
 
 				// 旗のない地雷の位置と旗を間違えて立てた箇所を表示
-				this._mineLocation._each(function(pos, state) {
-					if (state === MineLocation._HAS_MINE) {
-						game._board._setMine(pos);
-					} else if (state === MineLocation._HAS_FLAG) {
-						game._board._setMistake(pos);
+				this._board._eachMineFlag(function(idx, mf) {
+					if (mf === Board._HAS_MINE) {
+						game._board._setMine(idx);
+					} else if (mf === Board._HAS_FLAG) {
+						game._board._setMistake(idx);
 					}
 				});
 
 				// 爆発位置を表示
-				$.each(this._arrExplosion, function(i, pos) {
-					game._board._setExplosion(pos);
+				$.each(this._explosion, function(i, idx) {
+					game._board._setExplosion(idx);
 				});
 				
 			},
@@ -1039,14 +1010,17 @@
 						return;
 					}
 					
+					// 地雷と旗の状態を取得する
+					var mineFlag = game._board._getMineFlag(neighbor);
+
 					// 地雷がある場合はカウントアップする
-					if (game._mineLocation._hasMine(neighbor)) {
+					if (mineFlag & Board._HAS_MINE) {
 						mineCount++;
 						return;
 					}
 
-					// 旗がたっている場合は何もしない
-					if (game._board._isFlagged(neighbor)) {
+					// 旗がたっている場合は開けない
+					if (mineFlag & Board._HAS_FLAG) {
 						return;
 					}
 					
@@ -1106,7 +1080,8 @@
 			}
 		}
 	);
-	
+
+
 	// バージョン情報・初期設定
 	$.minesweeper = {};
 	$.minesweeper.version = "@VERSION";
@@ -1114,6 +1089,7 @@
 	{
 		level: 'easy'
 	};
+
 
 	// 言語固有の設定
 	$.minesweeper.regional = {};
