@@ -187,6 +187,73 @@
 	);
 
 	/**
+	 * 地雷生成クラス
+	 * @constructor
+	 */
+	var MineGenerator = function(cells, setMine) {
+		this._init(cells, setMine);
+	};
+	
+
+	// 地雷生成クラス－メソッド
+	$.extend(
+		MineGenerator.prototype,
+		{
+			// 初期化処理
+			_init: function(cells, setMine) {
+				this._cells = cells;
+				this._setMine = setMine;
+			},
+			// 地雷生成処理
+			_generate: function(mines, excludes) {
+			
+				// 自分自身を待避
+				var generator = this;
+				
+				// 予約済の位置の配列をで初期化
+				this._reserved = $.extend([], excludes);
+				// 位置の昇順にソートする
+				this._reserved.sort();
+				// 末尾に"."を追加
+				this._reserved.push(".");
+				// 空きマス数を初期化
+				this._emptyCells = this._cells - excludes.length;
+				
+				// 指定された数の地雷を配置する
+				for (; mines > 0; --mines) {
+					generator._insert();
+				}
+				
+			},
+			// 地雷追加処理
+			_insert: function() {
+			
+				// 自分自身をローカル変数に退避
+				var generator = this;
+			
+				// 空いているマスの中からランダム選ぶ
+				var idx = Math.floor(Math.random() * this._emptyCells);
+				
+				// 地雷がインデックスの昇順に並ぶよう、配列に挿入する。
+				$.each(this._reserved, function(i, val) {
+					if (val === "." || val > idx) {
+						// 終端に達するか、より後方の地雷が出現したら、配列に挿入
+						generator._reserved.splice(i, 0, idx);
+						generator._emptyCells--;
+						// 盤面に地雷をセット
+						generator._setMine(idx);
+						return false;
+					} else {
+						// マスのインデックスをずらす
+						//（前方の地雷の分だけ番号がずれる）
+						++idx;
+					}
+				});
+			}
+		}
+	);
+
+	/**
 	 * マインスイーパ盤面クラス
 	 * @constructor
 	 */
@@ -238,8 +305,8 @@
 				this._$cells = target;
 				
 				// マスの状態の初期化文字列を生成
-				var str = new Array(this._$cells.length + 1).join("'" + Board._STATE_NOT_MARKED + "',");
-				this._initStateStr = "[" + str.slice(0, -1) + "]";
+				var str = new Array(this._$cells.length + 1).join('"' + Board._STATE_NOT_MARKED + '",');
+				this._initStates = "[" + str.slice(0, -1) + "]";
 				
 				// リスナを初期化
 				var listener = new Listener(settings);
@@ -264,7 +331,7 @@
 			// リセット処理
 			_reset: function() {
 				// 全てのマスを隠（無印）状態に戻す
-				this._states = eval(this._initStateStr);
+				this._states = $.parseJSON(this._initStates);
 				this._$cells
 					.removeClass()
 					.addClass(Board._STATE_CLASS + Board._STATE_NOT_MARKED);
@@ -272,12 +339,18 @@
 				this._mineFlags = {};
 				// イベントを活性化する
 				this._listener._reset();
+				// 開始フラグオフ
 				this._started = false;
 			},
 			// 開始処理
 			_start: function(mines, excludes) {
+				var board = this;
 				// 地雷を生成する
-				new MineGenerator(this, mines)._generate(excludes);
+				new MineGenerator(this._$cells.length, function(idx) {
+					board._setMineFlag(idx, Board._HAS_MINE);
+				})
+				._generate(mines, excludes);
+				// 開始フラグオン
 				this._started = true;
 			},
 			// 停止処理
@@ -388,6 +461,10 @@
 				var mineFlag = this._mineFlags[idx];
 				return mineFlag === undefined ? 0 : mineFlag;
 			},
+			// 地雷の有無を返却する
+			_hasMine: function(idx) {
+				return this._getMineFlag(idx) & Board._HAS_MINE;
+			},
 			// 地雷と旗の状態を設定する
 			_setMineFlag: function(idx, val) {
 				if (this._mineFlags[idx] === undefined) {
@@ -405,10 +482,6 @@
 					}
 				}
 			},
-			// 地雷の有無を返却する
-			_hasMine: function(idx) {
-				return this._getMineFlag(idx) & Board._HAS_MINE;
-			},
 			// 全ての地雷／旗に対してコールバック処理を呼出す
 			_eachMineFlag: function(callback) {
 				$.each(this._mineFlags, callback);
@@ -416,92 +489,6 @@
 		}
 	);
 
-	/**
-	 * 地雷生成クラス
-	 * @constructor
-	 */
-	var MineGenerator = function(board, mines) {
-		this._init(board, mines);
-	};
-	
-
-	// 地雷生成クラス－メソッド
-	$.extend(
-		MineGenerator.prototype,
-		{
-			// 初期化処理
-			_init: function(board, mines) {
-				this._board = board;
-				this._mines = mines;
-			},
-			// 地雷生成処理
-			_generate: function(excludes) {
-			
-				// 自分自身を待避
-				var location = this;
-				
-				// 予約済の位置の配列を["."]で初期化
-				this._reserved = ["."];
-				// 空きマス数を初期化
-				this._emptyCells = this._board._$cells.length;
-
-				$.each(excludes, function(i, idx) {
-					// 最初に選んだマスに地雷が置かれないようにする
-					location._reserve(idx);
-				});
-				
-				// 配置する地雷数を取得
-				var mines = this._mines;
-				// 指定された数の地雷を配置する
-				for (; mines > 0; --mines) {
-					location._insert();
-				}
-				
-			},
-			// 空きマス予約処理
-			_reserve: function(idx) {
-			
-				// 自分自身をローカル変数に退避
-				var location = this;
-				
-				// 地雷がインデックスの昇順に並ぶよう、配列に挿入する。
-				$.each(this._reserved, function(i, val) {
-					if (val === "." || val > idx) {
-						// 終端に達するか、より後方の地雷が出現したら、配列に挿入
-						location._reserved.splice(i, 0, idx);
-						location._emptyCells--;
-						return false;
-					}
-				});
-				
-			},
-			// 地雷追加処理
-			_insert: function() {
-			
-				// 自分自身をローカル変数に退避
-				var location = this;
-			
-				// 空いているマスの中からランダム選ぶ
-				var idx = Math.floor(Math.random() * this._emptyCells);
-				
-				// 地雷がインデックスの昇順に並ぶよう、配列に挿入する。
-				$.each(this._reserved, function(i, val) {
-					if (val === "." || val > idx) {
-						// 終端に達するか、より後方の地雷が出現したら、配列に挿入
-						location._reserved.splice(i, 0, idx);
-						location._emptyCells--;
-						// 盤面に地雷をセット
-						location._board._setMineFlag(idx, Board._HAS_MINE);
-						return false;
-					} else {
-						// マスのインデックスをずらす
-						//（前方の地雷の分だけ番号がずれる）
-						++idx;
-					}
-				});
-			}
-		}
-	);
 	
 	/**
 	 * マインスイーパクラス
