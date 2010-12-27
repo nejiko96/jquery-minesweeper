@@ -1,0 +1,26 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>Ajax Localization Test</title>
+	<link type="text/css" href="../theme/jquery.minesweeper.css" rel="stylesheet" charset="UTF-8" />
+	<script type="text/javascript" src="../lib/jquery-1.4.4.js" ></script>
+	<script type="text/javascript" src="../src/jquery.minesweeper.js" ></script>
+	<script type="text/javascript" >
+	$(function() {
+		$.getScript("../src/i18n/jquery.minesweeper-ja.js",
+			function(data, status) {
+				alert(status);
+				alert(data);
+				$("#minesweeper1").minesweeper();
+			}
+		);
+	});
+	</script>
+</head>
+<body>
+
+<h1>Ajax Localization Test</h1>
+<div id="minesweeper1"></div>
+
+</body>
+</html>
