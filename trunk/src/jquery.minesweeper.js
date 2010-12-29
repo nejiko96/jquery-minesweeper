@@ -212,8 +212,6 @@
 				
 				// 予約済の位置の配列をで初期化
 				this._reserved = $.extend([], excludes);
-				// 位置の昇順にソートする
-				this._reserved.sort();
 				// 末尾に"."を追加
 				this._reserved.push(".");
 				// 空きマス数を初期化
