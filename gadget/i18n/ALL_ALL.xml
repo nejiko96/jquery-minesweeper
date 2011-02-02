@@ -13,5 +13,5 @@
   <msg name="pref_name_theme">Theme</msg>
   <msg name="pref_theme_small">Small (16x16px)</msg>
   <msg name="pref_theme_large">Large (32x32px)</msg>
-  <msg name="lang"></msg> 
+  <msg name="lang">en</msg> 
 </messagebundle>
