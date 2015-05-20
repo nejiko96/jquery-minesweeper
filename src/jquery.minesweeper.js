@@ -1066,7 +1066,6 @@
     }
   );
 
-
   // バージョン情報・初期設定
   $.minesweeper = {};
   $.minesweeper.version = "@VERSION";
@@ -1074,7 +1073,6 @@
   {
     level: 'easy'
   };
-
 
   // 言語固有の設定
   $.minesweeper.regional = {};
@@ -1087,7 +1085,6 @@
     clearedText: 'Cleared!'
   };
   $.extend($.minesweeper.defaults, $.minesweeper.regional['']);
-
 
   // プラグインメソッド
   $.fn.minesweeper = function(options) {

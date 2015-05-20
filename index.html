@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>jQuery minesweeper plugin</title>
+  <link rel="stylesheet" href="theme/jquery.minesweeper.css" />
+  <script src="http://code.jquery.com/jquery.min.js" ></script>
+  <script src="lib/jquery.timers-1.2.js" ></script>
+  <script src="src/jquery.minesweeper.js" ></script>
+  <!-- localization -->
+  <!-- <script src="src/i18n/jquery.minesweeper-ja.js" ></script>  -->
+  <script>
+  $(function() {
+  
+    // for debugging on old browser 
+    if (window.console === undefined) {
+      window.console = {};
+      window.console.log = function(msg) {
+        window.status = msg;
+      };
+    }
+    
+    $("#minesweeper1").minesweeper();
+    $("#minesweeper2").minesweeper({level: "easy"});
+    $("#minesweeper3").minesweeper({level: "medium"});
+    $("#minesweeper4").minesweeper({level: "hard"});
+
+    $("#btnCustom").click(function() {
+      $("#minesweeper5").minesweeper({
+        level: "custom",
+        width: $("#txtWidth").val(),
+        height: $("#txtHeight").val(),
+        mines: $("#txtMines").val()
+      });
+    });
+  });
+  </script>
+</head>
+<body>
+
+  <h1>jQuery minesweeper plugin</h1>
+
+  <h2>Default (Easy)</h2>
+  <div id="minesweeper1"></div>
+
+  <h2>Easy (9x9)</h2>
+  <div id="minesweeper2"></div>
+
+  <h2>Medium (16x16)</h2>
+  <div id="minesweeper3"></div>
+
+  <h2>Hard (30x16)</h2>
+  <div id="minesweeper4"></div>
+
+  <h2>Customize</h2>
+  <form>
+    width: <input type="text" id="txtWidth" value="9" /><br />
+    height: <input type="text" id="txtHeight" value="9" /><br />
+    mines: <input type="text" id="txtMines" value="10" /><br />
+    <button type="button" id="btnCustom" >Start</button>
+  </form>
+  <div id="minesweeper5"></div>
+
+</body>
+</html>

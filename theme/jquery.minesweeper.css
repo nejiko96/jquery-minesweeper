@@ -6,6 +6,11 @@
   border: 1px solid lightgrey;
   padding-right: 2px;
 }
+
+.minesweeper-cells {
+  line-height: 0;
+}
+
 .minesweeper-cells span {
   width: 32px;
   height: 32px;
@@ -29,4 +34,3 @@
 .minesweeper-state19 { background-position: 0 -128px; }
 .minesweeper-state1a { background-position: -32px -128px; }
 .minesweeper-state1b { background-position: -64px -128px; }
-
