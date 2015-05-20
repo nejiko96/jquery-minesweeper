@@ -1,17 +1,17 @@
 .minesweeper-mines, .minesweeper-timer {
-	display: inline-block;
-	width: 40px;
-	text-align: right;
-	background-color: whitesmoke;
-	border: 1px solid lightgrey;
-	padding-right: 2px;
+  display: inline-block;
+  width: 40px;
+  text-align: right;
+  background-color: whitesmoke;
+  border: 1px solid lightgrey;
+  padding-right: 2px;
 }
 .minesweeper-cells span {
-	width: 32px;
-	height: 32px;
-	background-image: url('image/green_32x32.png');
-	display: inline-block;
-	overflow: hidden;
+  width: 32px;
+  height: 32px;
+  background-image: url('image/green_32x32.png');
+  display: inline-block;
+  overflow: hidden;
 }
 
 .minesweeper-state01 { background-position: 0 0; }

@@ -1,26 +1,26 @@
 Index: jquery.minesweeper.js
 ===================================================================
---- jquery.minesweeper.js	(revision 19)
-+++ jquery.minesweeper.js	(working copy)
+--- jquery.minesweeper.js (revision 19)
++++ jquery.minesweeper.js (working copy)
 @@ -324,7 +324,9 @@
- 						//（前方の地雷の分だけ番号がずれる）
- 						++pos;
- 					}
--				});
-+				});
-+				
-+				$.minesweeper.statAdd(pos);
- 			},
- 			// 地雷削除処理
- 			_remove: function(pos) {
+            //（前方の地雷の分だけ番号がずれる）
+            ++pos;
+          }
+-       });
++       });
++       
++       $.minesweeper.statAdd(pos);
+      },
+      // 地雷削除処理
+      _remove: function(pos) {
 @@ -340,7 +342,9 @@
- 						location._emptyCells++;
- 						return false;
- 					}
--				});
-+				});
-+				
-+				$.minesweeper.statSub(pos);
- 			},
- 			// 地雷有無判定
- 			_contains: function(pos) {
+            location._emptyCells++;
+            return false;
+          }
+-       });
++       });
++       
++       $.minesweeper.statSub(pos);
+      },
+      // 地雷有無判定
+      _contains: function(pos) {

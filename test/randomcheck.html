@@ -1,49 +1,49 @@
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Random Generation Check</title>
-	<link type="text/css" href="../theme/jquery.minesweeper.css" rel="stylesheet" charset="UTF-8" />
-	<style type="text/css">
-		#stat div {
-			height: 3px;
-			width: 0px;
-			background-color: skyblue;
-			border: 1px solid cornflowerblue;
-		}
-	</style>
-	<script type="text/javascript" src="../lib/jquery-1.4.4.js" ></script>
-	<script type="text/javascript" src="../src/jquery.minesweeper.js" ></script>
-	<script type="text/javascript" >
-		$(function() {
-		
-			$("#minesweeper1").minesweeper();
-			
-			$(".minesweeper-cells>span").each(function(){
-				$("#stat").append('<div></div>');
-			});
-			
-			$.minesweeper.statAdd = function(pos) {
-				var $divStat = $("#stat>div").eq(pos);
-				var stat = $divStat.data('stat');
-				if (stat) {
-					stat += 1;
-				} else {
-					stat = 1;
-				}
-				$divStat.data('stat', stat);
-				$divStat.css("width", (stat * 3) + "px");
-			};
-			
-			$.minesweeper.statSub = function(pos) {
-				var $divStat = $("#stat>div").eq(pos);
-				var stat = $divStat.data('stat');
-				stat -= 1;
-				$divStat.data('stat', stat);
-				$divStat.css("width", (stat * 3) + "px");
-			};
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Random Generation Check</title>
+  <link type="text/css" href="../theme/jquery.minesweeper.css" rel="stylesheet" charset="UTF-8" />
+  <style type="text/css">
+    #stat div {
+      height: 3px;
+      width: 0px;
+      background-color: skyblue;
+      border: 1px solid cornflowerblue;
+    }
+  </style>
+  <script type="text/javascript" src="../lib/jquery-1.4.4.js" ></script>
+  <script type="text/javascript" src="../src/jquery.minesweeper.js" ></script>
+  <script type="text/javascript" >
+    $(function() {
+    
+      $("#minesweeper1").minesweeper();
+      
+      $(".minesweeper-cells>span").each(function(){
+        $("#stat").append('<div></div>');
+      });
+      
+      $.minesweeper.statAdd = function(pos) {
+        var $divStat = $("#stat>div").eq(pos);
+        var stat = $divStat.data('stat');
+        if (stat) {
+          stat += 1;
+        } else {
+          stat = 1;
+        }
+        $divStat.data('stat', stat);
+        $divStat.css("width", (stat * 3) + "px");
+      };
+      
+      $.minesweeper.statSub = function(pos) {
+        var $divStat = $("#stat>div").eq(pos);
+        var stat = $divStat.data('stat');
+        stat -= 1;
+        $divStat.data('stat', stat);
+        $divStat.css("width", (stat * 3) + "px");
+      };
 
-		});
-	</script>
+    });
+  </script>
 </head>
 <body>
 

@@ -1,54 +1,54 @@
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>Number Conversion Test</title>
-	<script type="text/javascript" src="../lib/jquery-1.4.4.js" ></script>
-	<script type="text/javascript" >
-	$(function() {
-		var numbercheck =  function (val) {
-			$("#result").append(
-				"before:" + typeof(val) + ":" +  val + ":" + isFinite(val) + "<br />"
-			);
-			val = parseInt(val, 10);
-			$("#result").append(
-				"after:" + typeof(val) + ":" +  val + ":" + isFinite(val) + "<br /><br />"
-			);
-			
-		}
-		
-		// false->false
-		numbercheck(undefined);
-		numbercheck("abc");
-		numbercheck(NaN);
-		numbercheck(Infinity);
-		numbercheck(-Infinity);
-		numbercheck(["a"]);
-		numbercheck(["b", "c"]);
-		numbercheck({});
-		numbercheck({name:"value"});
-		numbercheck(numbercheck);
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>Number Conversion Test</title>
+  <script type="text/javascript" src="../lib/jquery-1.4.4.js" ></script>
+  <script type="text/javascript" >
+  $(function() {
+    var numbercheck =  function (val) {
+      $("#result").append(
+        "before:" + typeof(val) + ":" +  val + ":" + isFinite(val) + "<br />"
+      );
+      val = parseInt(val, 10);
+      $("#result").append(
+        "after:" + typeof(val) + ":" +  val + ":" + isFinite(val) + "<br /><br />"
+      );
+      
+    }
+    
+    // false->false
+    numbercheck(undefined);
+    numbercheck("abc");
+    numbercheck(NaN);
+    numbercheck(Infinity);
+    numbercheck(-Infinity);
+    numbercheck(["a"]);
+    numbercheck(["b", "c"]);
+    numbercheck({});
+    numbercheck({name:"value"});
+    numbercheck(numbercheck);
 
-		// true->false
-		numbercheck(null);
-		numbercheck("");
-		numbercheck([]);
-		numbercheck(true);
-		numbercheck(false);
-		
+    // true->false
+    numbercheck(null);
+    numbercheck("");
+    numbercheck([]);
+    numbercheck(true);
+    numbercheck(false);
+    
 
-		// false->true
-		numbercheck([1, 2]);
+    // false->true
+    numbercheck([1, 2]);
 
-		// true->true
-		numbercheck("123");
-		numbercheck("12.34");
-		numbercheck(123);
-		numbercheck(0);
-		numbercheck(12.34);
-		numbercheck(-123);
-		numbercheck([3]);
-	});
-	</script>
+    // true->true
+    numbercheck("123");
+    numbercheck("12.34");
+    numbercheck(123);
+    numbercheck(0);
+    numbercheck(12.34);
+    numbercheck(-123);
+    numbercheck([3]);
+  });
+  </script>
 </head>
 <body>
 

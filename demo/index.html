@@ -1,28 +1,28 @@
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>jQuery minesweeper Demo</title>
-	<link type="text/css" href="css/jquery.minesweeper-@VERSION.css" rel="stylesheet" media="screen" charset="UTF-8" />
-	<script type="text/javascript" src="js/jquery-1.4.4.min.js" ></script>
-	<script type="text/javascript" src="js/jquery.minesweeper-@VERSION.min.js" ></script>
-	<script type="text/javascript" src="js/i18n/jquery.minesweeper-ja.js" ></script>
-	<script type="text/javascript" >
-	$(function() {
-//		$.minesweeper.defaults.level = "medium";
-		$("#minesweeper1").minesweeper();
-		$("#minesweeper2").minesweeper({level: "easy"});
-		$("#minesweeper3").minesweeper({level: "medium"});
-		$("#minesweeper4").minesweeper({level: "hard"});
-		$("#btnCustom").click(function() {
-			$("#minesweeper5").minesweeper({
-				level: "custom",
-				width: $("#txtWidth").val(),
-				height: $("#txtHeight").val(),
-				mines: $("#txtMines").val()
-			});
-		});
-	});
-	</script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>jQuery minesweeper Demo</title>
+  <link type="text/css" href="css/jquery.minesweeper-@VERSION.css" rel="stylesheet" media="screen" charset="UTF-8" />
+  <script type="text/javascript" src="js/jquery-1.4.4.min.js" ></script>
+  <script type="text/javascript" src="js/jquery.minesweeper-@VERSION.min.js" ></script>
+  <script type="text/javascript" src="js/i18n/jquery.minesweeper-ja.js" ></script>
+  <script type="text/javascript" >
+  $(function() {
+//    $.minesweeper.defaults.level = "medium";
+    $("#minesweeper1").minesweeper();
+    $("#minesweeper2").minesweeper({level: "easy"});
+    $("#minesweeper3").minesweeper({level: "medium"});
+    $("#minesweeper4").minesweeper({level: "hard"});
+    $("#btnCustom").click(function() {
+      $("#minesweeper5").minesweeper({
+        level: "custom",
+        width: $("#txtWidth").val(),
+        height: $("#txtHeight").val(),
+        mines: $("#txtMines").val()
+      });
+    });
+  });
+  </script>
 </head>
 <body>
 

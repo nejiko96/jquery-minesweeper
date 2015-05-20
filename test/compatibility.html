@@ -1,79 +1,79 @@
 <html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-	<title>CSSブラウザ非互換チェック</title>
-	<link type="text/css" href="../theme/jquery.minesweeper.css" rel="stylesheet" charset="UTF-8" />
-	<script type="text/javascript" src="../lib/jquery-1.4.4.js" ></script>
-	<style type="text/css" >
-		/*
-		 * この設定は現在未使用
-		 * 「display: inline-block」はIE８未サポート
-		 * IEの場合は、divのデフォルトの挙動がblockとなってしまうので
-		 * CSSハックでIEの場合のみinlineに設定されるようにする
-		 */
-		.minesweeper-cells div {
-			width: 32px;
-			height: 32px;
-			background-image: url('../theme/image/green_32x32.png');
-			display: inline-block;
-		 	/display: inline;
-		 	/zoom: 1;
-		}
-		/*
-		 * 子供セレクタ「.minesweeper-cells > span」にしたいがIE８未サポート
-		 * 「display: inline-block」はIE８未サポート
-		 * IEの場合は、spanのデフォルトの挙動(inline)となる。
-		 */
-		.minesweeper-cells span {
-			width: 32px;
-			height: 32px;
-			background-image: url('../theme/image/green_32x32.png');
-			display: inline-block;
-		}
-	</style>
-	<script type="text/javascript" >
-		$(function() {
-		
-			if (window.console === undefined) {
-				window.console = {};
-				window.console.log = function(msg) {
-					window.status = msg;
-				}
-			}
-			
-			// コンテキストメニュー・範囲選択抑止
-			$("#minesweeper").bind("contextmenu selectstart", function() {
-				return false;
-			});
-			
-			
-			$(document).mouseup(function() {
-				console.log('document:mouseup');
-			});
-			
-			var $cells = $(".minesweeper-cells div, .minesweeper-cells span");
-			
-			$cells
-			.click(function() {
-				$(this).removeClass().addClass("minesweeper-state10");
-			})
-			.mousedown(function(ev) {
-				console.log($cells.index(this) +':mousedown:button=' + ev.button);
-			})
-			.mouseup(function() {
-				console.log($cells.index(this) +':mouseup');
-			})
-//			.mousemove(function() {
-//				console.log($cells.index(this) +':mousemove');
-//			})
-			.mouseover(function() {
-				console.log($cells.index(this) +':mouseover');
-			})
-			.mouseout(function() {
-				console.log($cells.index(this) +':mouseout');
-			});
-		});
-	</script>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+  <title>CSSブラウザ非互換チェック</title>
+  <link type="text/css" href="../theme/jquery.minesweeper.css" rel="stylesheet" charset="UTF-8" />
+  <script type="text/javascript" src="../lib/jquery-1.4.4.js" ></script>
+  <style type="text/css" >
+    /*
+     * この設定は現在未使用
+     * 「display: inline-block」はIE８未サポート
+     * IEの場合は、divのデフォルトの挙動がblockとなってしまうので
+     * CSSハックでIEの場合のみinlineに設定されるようにする
+     */
+    .minesweeper-cells div {
+      width: 32px;
+      height: 32px;
+      background-image: url('../theme/image/green_32x32.png');
+      display: inline-block;
+      /display: inline;
+      /zoom: 1;
+    }
+    /*
+     * 子供セレクタ「.minesweeper-cells > span」にしたいがIE８未サポート
+     * 「display: inline-block」はIE８未サポート
+     * IEの場合は、spanのデフォルトの挙動(inline)となる。
+     */
+    .minesweeper-cells span {
+      width: 32px;
+      height: 32px;
+      background-image: url('../theme/image/green_32x32.png');
+      display: inline-block;
+    }
+  </style>
+  <script type="text/javascript" >
+    $(function() {
+    
+      if (window.console === undefined) {
+        window.console = {};
+        window.console.log = function(msg) {
+          window.status = msg;
+        }
+      }
+      
+      // コンテキストメニュー・範囲選択抑止
+      $("#minesweeper").bind("contextmenu selectstart", function() {
+        return false;
+      });
+      
+      
+      $(document).mouseup(function() {
+        console.log('document:mouseup');
+      });
+      
+      var $cells = $(".minesweeper-cells div, .minesweeper-cells span");
+      
+      $cells
+      .click(function() {
+        $(this).removeClass().addClass("minesweeper-state10");
+      })
+      .mousedown(function(ev) {
+        console.log($cells.index(this) +':mousedown:button=' + ev.button);
+      })
+      .mouseup(function() {
+        console.log($cells.index(this) +':mouseup');
+      })
+//      .mousemove(function() {
+//        console.log($cells.index(this) +':mousemove');
+//      })
+      .mouseover(function() {
+        console.log($cells.index(this) +':mouseover');
+      })
+      .mouseout(function() {
+        console.log($cells.index(this) +':mouseout');
+      });
+    });
+  </script>
 </head>
 <body>
 
