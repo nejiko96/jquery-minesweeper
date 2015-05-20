@@ -2,6 +2,8 @@
 
 > jQuery minesweeper plugin
 
+## Demo
+http://nejiko96.github.io/jquery-minesweeper/index.html
 
 ## Quick Start
 
