@@ -43,7 +43,7 @@ module.exports = function (grunt) {
     sass: {
       dist: {
         files: {
-          'styles/<%= pkg.name %>.css': 'styles/<%= pkg.name %>.scss'          
+          'styles/<%= pkg.name %>.css': 'styles/<%= pkg.name %>.scss'
         }
       }
     },
@@ -124,15 +124,26 @@ module.exports = function (grunt) {
       }
     },
     bump: {
+      options: {
+        commit: false,
+        createTag: false,
+        push: false
+      },
       pkg: {
         options: {
           files: ['package.json', 'bower.json']
         }
       },
-      src: {
+      srcHeader: {
         options: {
           files: ['scripts/jquery.minesweeper.js'],
-          globalReplace: true,
+          regExp: '(Version: )(\\d+\\.\\d+\\.\\d+)'
+        }
+      },
+      pluginVer: {
+        options: {
+          files: ['scripts/jquery.minesweeper.js'],
+          regExp: '(version = \")(\\d+\\.\\d+\\.\\d+)(\")'
         }
       }
     }
