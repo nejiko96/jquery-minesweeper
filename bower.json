@@ -1,12 +1,12 @@
 {
   "name": "jquery-minesweeper",
-  "version": "1.4.1",
+  "version": "1.4.2",
   "homepage": "https://github.com/nejiko96/jquery-minesweeper",
   "authors": [
     "nejiko96 <nejiko2006@gmail.com>"
   ],
   "description": "jquery minesweeper plugin",
-  "main": "dist/jquery.minesweeper.js",
+  "main": "scripts/jquery.minesweeper.js",
   "keywords": [
     "jQuery",
     "minesweeper"
@@ -16,7 +16,9 @@
     "**/.*",
     "lib",
     "test",
-    "experiment"
+    "experiment",
+    "package.json",
+    "Gruntfile.js"
   ],
   "dependencies": {
     "jquery": ">=1.4.4"
