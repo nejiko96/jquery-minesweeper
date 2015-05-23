@@ -1,0 +1,22 @@
+{
+  "name": "jquery-minesweeper",
+  "version": "1.4.0",
+  "homepage": "https://github.com/nejiko96/jquery-minesweeper",
+  "authors": [
+    "nejiko96 <nejiko2006@gmail.com>"
+  ],
+  "description": "jquery minesweeper plugin",
+  "main": "src/jquery.minesweeper.js",
+  "keywords": [
+    "jQuery",
+    "minesweeper"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
