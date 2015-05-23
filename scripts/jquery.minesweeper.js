@@ -9,7 +9,7 @@
  * licensed under the MIT license:
  * http://www.opensource.org/licenses/mit-license.php
  */
- 
+
 (function($) {
 
   /**
@@ -63,7 +63,7 @@
       }
     }
   );
-  
+
   // リスナクラス－メソッド
   $.extend(
     Listener.prototype,
@@ -90,7 +90,7 @@
       },
       // マスのマウスダウン時処理
       _onCellMouseDown: function(ev, idx) {
-      
+
         var buttonKey = 0;
 
         // IEもFirefoxもbuttonプロパティで判定したほうがよいが、
@@ -113,10 +113,10 @@
             buttonKey = 0;
           }
         }
-        
+
         // 押下中のボタンを記憶
         this._buttonKey |= buttonKey;
-        
+
         // マウスダウンイベントをトリガーする
         if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
           this._triggers.onCellLeftMouseDown(idx);
@@ -128,12 +128,12 @@
       },
       // マスのマウスオーバー時処理
       _onCellMouseOver: function(ev, idx) {
-      
+
         // ボタンを押していない場合は処理なし
         if (this._buttonKey === 0) {
           return;
         }
-        
+
         // 押下中のボタンに応じた処理を呼出す
         if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
           this._triggers.onCellLeftMouseOver(idx);
@@ -145,12 +145,12 @@
       },
       // マスのマウスアウト時処理
       _onCellMouseOut: function(ev, idx) {
-      
+
         // ボタンを押していない場合は処理なし
         if (this._buttonKey === 0) {
           return;
         }
-        
+
         // 押下中のボタンに応じた処理を呼出す
         if (this._buttonKey === Listener._EVENT_BUTTON_LEFT) {
           this._triggers.onCellLeftMouseOut(idx);
@@ -167,7 +167,7 @@
         if (this._buttonKey === 0) {
           return;
         }
-        
+
         // 押下中のボタンを取得
         var buttonKey = this._buttonKey;
 
@@ -193,7 +193,7 @@
   var MineGenerator = function(cells, setMine) {
     this._init(cells, setMine);
   };
-  
+
 
   // 地雷生成クラス－メソッド
   $.extend(
@@ -206,32 +206,32 @@
       },
       // 地雷生成処理
       _generate: function(mines, excludes) {
-      
+
         // 自分自身を待避
         var generator = this;
-        
+
         // 予約済の位置の配列をで初期化
         this._reserved = $.extend([], excludes);
         // 末尾に"."を追加
         this._reserved.push(".");
         // 空きマス数を初期化
         this._emptyCells = this._cells - excludes.length;
-        
+
         // 指定された数の地雷を配置する
         for (; mines > 0; --mines) {
           generator._insert();
         }
-        
+
       },
       // 地雷追加処理
       _insert: function() {
-      
+
         // 自分自身をローカル変数に退避
         var generator = this;
-      
+
         // 空いているマスの中からランダム選ぶ
         var idx = Math.floor(Math.random() * this._emptyCells);
-        
+
         // 地雷がインデックスの昇順に並ぶよう、配列に挿入する。
         $.each(this._reserved, function(i, val) {
           if (val === "." || val > idx) {
@@ -284,28 +284,28 @@
       _STATE_EXPLOSION: '1a',
       // マスの状態－開（ミス）
       _STATE_MISTAKE: '1b',
-      
+
       // 地雷あり
       _HAS_MINE: 1,
       // 旗あり
       _HAS_FLAG: 2
     }
   );
-  
+
   // マインスイーパ盤面クラス－メソッド
   $.extend(
     Board.prototype,
     {
       // 初期化処理
       _init: function(target, settings) {
-      
+
         // マスのDOMオブジェクトを初期化
         this._$cells = target;
-        
+
         // マスの状態の初期化文字列を生成
         var str = new Array(this._$cells.length + 1).join('"' + Board._STATE_NOT_MARKED + '",');
         this._initStates = "[" + str.slice(0, -1) + "]";
-        
+
         // リスナを初期化
         var listener = new Listener(settings);
         // イベントを登録する
@@ -487,7 +487,7 @@
     }
   );
 
-  
+
   /**
    * マインスイーパクラス
    * @constructor
@@ -495,7 +495,7 @@
   var MineSweeper = function(target, settings) {
     this._init(target, settings);
   };
-  
+
   // マインスイーパクラス－定数
   $.extend(
     MineSweeper,
@@ -541,14 +541,14 @@
       _TIMER_MAX_COUNT: 999
     }
   );
-  
+
   // マインスイーパクラス－メソッド
   $.extend(
     MineSweeper.prototype,
     {
       // 初期化処理
       _init: function(target, settings) {
-      
+
         // 表示対象DOMエレメントの取得
         this._$target = $(target);
         // 設定の取得
@@ -556,14 +556,14 @@
 
         // 盤面サイズの初期化
         this._initSize();
-        
+
       },
       // 盤面サイズ初期化処理
       _initSize: function() {
-      
+
         // 設定をレベル毎の設定値で上書きする
         $.extend(this._settings, MineSweeper._DEFAULT_LEVELS[this._settings.level] || {});
-        
+
         // 幅を初期化する
         this._width = parseInt(this._settings.width, 10);
         if (isFinite(this._width)) {
@@ -576,7 +576,7 @@
         } else {
           this._width = MineSweeper._WIDTH_MIN;
         }
-        
+
         // 高さを初期化する
         this._height = parseInt(this._settings.height, 10);
         if (isFinite(this._height)) {
@@ -589,10 +589,10 @@
         } else {
           this._height = MineSweeper._HEIGHT_MIN;
         }
-        
+
         // マス数を初期化する
         this._cells = this._width * this._height;
-        
+
         // 地雷数を初期化する
         this._mines = parseInt(this._settings.mines, 10);
         if (isFinite(this._mines)) {
@@ -621,7 +621,7 @@
 
         // 盤面を描画
         this._$target.html(this._generateHtml());
-        
+
         // 盤面オブジェクトを作成し、イベントハンドラを登録
         this._board = new Board(
           this._$target.find(".minesweeper-cells > span"),
@@ -661,32 +661,32 @@
         this._$txtTimer = this._$target.find(".minesweeper-timer");
         // 再開ボタンを取得
         this._$btnRestart = this._$target.find(".minesweeper-restart");
-        
+
         // ロケール依存のテキストを設定
         this._$txtMines.before(this._settings.minesTextBefore);
         this._$txtMines.after(this._settings.minesTextAfter);
         this._$txtTimer.before(this._settings.timerTextBefore);
         this._$txtTimer.after(this._settings.timerTextAfter);
         this._$btnRestart.text(this._settings.restartText);
-        
+
         // 各種リスナ登録
         // 再開ボタンのイベントに自身のメソッドを登録
         this._$btnRestart
           .click(function() {
             game._resetGame();
           });
-          
-        
+
+
         // ゲームの初期化
         this._resetGame();
-        
+
       },
       // HTML生成処理
       _generateHtml: function() {
-      
+
         var idx;
         var html = '';
-        
+
         html += '<form>';
         html += '<nobr>';
         html += '<span class="minesweeper-mines" ></span>';
@@ -703,7 +703,7 @@
         html += '<button type="button" class="minesweeper-restart" ></button>';
         html += '</nobr>';
         html += '</form>';
-        
+
         return html;
       },
       // マスの左マウスダウン時処理
@@ -723,17 +723,17 @@
       },
       // マスの左マウスアップ時処理
       _onCellLeftMouseUp: function(idx) {
-      
+
         // ゲームが始まっていない場合、開始する。
         if (!this._board._started) {
           this._startGame(idx);
         }
-        
+
         // 開いてるか旗が立っていたら何もしない
         if (this._board._isFixed(idx)) {
           return;
         }
-        
+
         // 地雷を選んだ場合
         if (this._board._hasMine(idx)) {
           //ゲームオーバー
@@ -741,20 +741,20 @@
           this._gameOver();
           return;
         }
-        
+
         // マスを開く
         this._openSafe(idx);
       },
       // マスの右マウスダウン時処理
       _onCellRightMouseDown: function(idx) {
-      
+
         var mines;
-      
+
         // すでに開いていたら何もしない
         if (this._board._isOpened(idx)) {
           return;
         }
-        
+
         // 現在の状態に応じて状態遷移させる
         if (this._board._isNotMarked(idx)) {
           //無印→旗
@@ -773,7 +773,7 @@
       },
       // マスの左右マウスダウン時処理
       _onCellBothMouseDown: function(idx) {
-      
+
         // 自分自身をローカル変数に待避する
         var game = this;
 
@@ -785,7 +785,7 @@
       },
       // マスの左右マウスムーブ時処理
       _onCellBothMouseOver: function(idx) {
-      
+
         // 自分自身をローカル変数に待避する
         var game = this;
 
@@ -797,7 +797,7 @@
       },
       // マスの左右マウスアウト時処理
       _onCellBothMouseOut: function(idx) {
-      
+
         // 自分自身をローカル変数に待避する
         var game = this;
 
@@ -832,10 +832,10 @@
         var safe = [];
         // 爆発するマスのリストを初期化する
         var explosion = [];
-        
+
         //隣接するマスを全て調べる
         $.each(this._surroundings(idx), function(i, neighbor) {
-        
+
           // 開いているマスは対象外
           if (game._board._isOpened(neighbor)) {
             return;
@@ -850,18 +850,18 @@
             flagCount++;
             return;
           }
-          
+
           //地雷がある場合
           if (mineFlag & Board._HAS_MINE) {
             // 爆発マスのリストに加える
             explosion.push(neighbor);
             return;
           }
-          
+
           //安全なマスのリストに加える
           safe.push(neighbor);
         });
-        
+
         //隣接する地雷の数と旗の数が一致しなければ、何もしないで抜ける
         if (flagCount !== mineCount) {
           return;
@@ -881,26 +881,26 @@
       },
       // ゲームリセット処理
       _resetGame: function() {
-      
+
         // タイマーをリセット
         if ($.timer) {
           this._$txtTimer.stopTime();
         }
         this._$txtTimer.text("0");
-        
+
         // ゲーム状態をクリア
         this._unopened = this._cells - this._mines;
         this._explosion = [];
-        
+
         // 盤面のリセット・イベント活性化
         this._board._reset();
         // 残り地雷数の初期表示
         this._$txtMines.text(this._mines);
-        
+
       },
       // ゲーム開始処理
       _startGame: function(idx) {
-      
+
         // 地雷位置を初期化
         this._board._start(this._mines, this._neighbors(idx));
 
@@ -918,20 +918,20 @@
       },
       // ゲーム停止処理
       _stopGame: function() {
-      
+
         if ($.timer) {
           // タイマーを停止
           this._$txtTimer.stopTime();
         }
-        
+
         // 盤面のイベント非活性化
         this._board._stop();
       },
       // ゲームクリア処理
       _gameClear: function() {
-      
+
         var game = this;
-      
+
         // ゲームを停止
         this._stopGame();
 
@@ -941,17 +941,17 @@
             game._board._setFlagged(idx);
           }
         });
-        
+
         // 残り地雷数の表示をリセット
         this._$txtMines.text("0");
-        
+
         // メッセージ表示
         alert(this._settings.clearedText);
-        
+
       },
       // ゲームオーバー処理
       _gameOver: function() {
-      
+
         var game = this;
 
         // ゲームを停止
@@ -970,11 +970,11 @@
         $.each(this._explosion, function(i, idx) {
           game._board._setExplosion(idx);
         });
-        
+
       },
       // 安全なマスを開く
       _openSafe: function(idx) {
-        
+
         // すでに開けられていたら何もしない
         if (this._board._isOpened(idx)) {
           return;
@@ -986,7 +986,7 @@
         var mineCount = 0;
         // 連鎖して開けるマスの配列を初期化する
         var nextOpen = [];
-        
+
         // 隣接するマスを調べ、地雷の数と連鎖してあけるマスを取得する
         $.each(this._surroundings(idx), function(i, neighbor) {
 
@@ -994,7 +994,7 @@
           if (game._board._isOpened(neighbor)) {
             return;
           }
-          
+
           // 地雷と旗の状態を取得する
           var mineFlag = game._board._getMineFlag(neighbor);
 
@@ -1008,17 +1008,17 @@
           if (mineFlag & Board._HAS_FLAG) {
             return;
           }
-          
+
           // 開けるマスに追加
           nextOpen.push(neighbor);
         });
-        
+
         // マスを開け、周囲の地雷の数を表示する
         this._board._setMineCount(idx, mineCount);
-        
+
         // 隠しマスのカウントを減らす
         this._unopened--;
-        
+
         //クリア判定をする
         if (this._unopened <= 0) {
           this._gameClear();
@@ -1039,13 +1039,13 @@
       },
       // 近傍のマスの配列を求める
       _neighbors: function(idx, notme) {
-      
+
         var game = this;
         var neighbors = [];
-        
+
         var x1 = idx % this._width;
         var y1 = idx - x1;
-        
+
         $.each([y1 - game._width, y1, y1 + game._width], function(i, y2) {
           if (y2 < 0 || y2 >= game._cells) {
             return;
@@ -1060,7 +1060,7 @@
             neighbors.push(y2 + x2);
           });
         });
-        
+
         return neighbors;
       }
     }
@@ -1088,14 +1088,14 @@
 
   // プラグインメソッド
   $.fn.minesweeper = function(options) {
-  
+
     // 初期設定をコピーし、パラメータの設定を上書きする
     var settings = $.extend(
       {},
       $.minesweeper.defaults,
       options || {}
     );
-  
+
     // 上記の設定でマインスイーパの盤面を作成する
     return $(this).each(function() {
       // コンテキストメニュー・範囲選択抑止
@@ -1106,5 +1106,5 @@
       new MineSweeper(this, settings)._show();
     });
   };
-  
+
 })(jQuery);

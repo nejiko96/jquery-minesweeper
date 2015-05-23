@@ -122,6 +122,19 @@ module.exports = function (grunt) {
           open: true
         }
       }
+    },
+    bump: {
+      pkg: {
+        options: {
+          files: ['package.json', 'bower.json']
+        }
+      },
+      src: {
+        options: {
+          files: ['scripts/jquery.minesweeper.js'],
+          globalReplace: true,
+        }
+      }
     }
   });
 
