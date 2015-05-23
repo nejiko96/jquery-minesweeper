@@ -1,6 +1,6 @@
 {
   "name": "jquery.minesweeper",
-  "version": "1.4.1",
+  "version": "1.4.0",
   "private": true,
   "description": "jQuery minesweeper plugin",
   "main": "jquery.minesweeper.js",
