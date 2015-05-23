@@ -1,7 +1,7 @@
 /**
  * jQuery minesweeper plugin
- * Version: @VERSION
- * Date: @DATE
+ * Version: 1.4.0
+ * Date: 2015/05/23
  * @requires jQuery v1.4.4 or later
  * @requires jQuery.timers (optional)
  *

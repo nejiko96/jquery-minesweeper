@@ -1,5 +1,5 @@
 (function($) {
-  $.minesweeper.regional['ja'] = {
+  $.minesweeper.regional.ja = {
     minesTextBefore: 'あと',
     minesTextAfter: '個',
     timerTextBefore: '',
@@ -7,5 +7,5 @@
     restartText: 'もう一回？',
     clearedText: 'クリア！'
   };
-  $.extend($.minesweeper.defaults, $.minesweeper.regional['ja']);
+  $.extend($.minesweeper.defaults, $.minesweeper.regional.ja);
 })(jQuery);

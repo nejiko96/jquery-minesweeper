@@ -1,0 +1,47 @@
+$cell-size: 32px;
+$background-img: '../images/green_32x32.png';
+$text-background: #f5f5f5;
+$text-border: #d3d3d3;
+
+$shift1: -$cell-size;
+$shift2: $shift1 * 2;
+$shift3: $shift1 * 3;
+$shift4: $shift1 * 4;
+
+.minesweeper-mines, 
+.minesweeper-timer {
+  background-color: $text-background;
+  border: 1px solid $text-border;
+  display: inline-block;
+  padding-right: 2px;
+  text-align: right;
+  width: 40px;
+}
+
+.minesweeper-cells {
+  line-height: 0;
+
+  span {
+    background-image: url($background-img);
+    display: inline-block;
+    height: $cell-size;
+    overflow: hidden;
+    width: $cell-size;
+  }
+}
+
+.minesweeper-state01 { background-position: 0 0; }
+.minesweeper-state0f { background-position: $shift1 0; }
+.minesweeper-state0h { background-position: $shift2 0; }
+.minesweeper-state10 { background-position: 0 $shift1; }
+.minesweeper-state11 { background-position: $shift1 $shift1; }
+.minesweeper-state12 { background-position: $shift2 $shift1; }
+.minesweeper-state13 { background-position: 0 $shift2; }
+.minesweeper-state14 { background-position: $shift1 $shift2; }
+.minesweeper-state15 { background-position: $shift2 $shift2; }
+.minesweeper-state16 { background-position: 0 $shift3; }
+.minesweeper-state17 { background-position: $shift1 $shift3; }
+.minesweeper-state18 { background-position: $shift2 -$shift3; }
+.minesweeper-state19 { background-position: 0 $shift4; }
+.minesweeper-state1a { background-position: $shift1 $shift4; }
+.minesweeper-state1b { background-position: $shift2 $shift4; }

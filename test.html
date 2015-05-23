@@ -4,13 +4,22 @@
   <meta charset="utf-8" />
   <title>jQuery minesweeper plugin</title>
   <link rel="stylesheet" href="styles/jquery.minesweeper.css" />
-  <script src="http://code.jquery.com/jquery.min.js" ></script>
+  <script src="bower_components/jquery/dist/jquery.min.js" ></script>
   <script src="lib/jquery.timers.js" ></script>
   <script src="scripts/jquery.minesweeper.min.js" ></script>
   <!-- localization -->
-  <!-- <script src="scripts/i18n/jquery.minesweeper-ja.js" ></script>  -->
+  <script src="scripts/i18n/jquery.minesweeper-ja.js" ></script>
   <script>
   $(function() {
+  
+    // for debugging on old browser 
+    if (window.console === undefined) {
+      window.console = {};
+      window.console.log = function(msg) {
+        window.status = msg;
+      };
+    }
+    
     $("#minesweeper1").minesweeper();
     $("#minesweeper2").minesweeper({level: "easy"});
     $("#minesweeper3").minesweeper({level: "medium"});
@@ -51,16 +60,6 @@
     <button type="button" id="btnCustom" >Start</button>
   </form>
   <div id="minesweeper5"></div>
-
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-20926424-2', 'auto');
-  ga('send', 'pageview');
-</script>
 
 </body>
 </html>

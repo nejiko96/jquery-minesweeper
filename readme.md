@@ -12,11 +12,10 @@ Download the [latest version](https://github.com/nejiko96/jquery-minesweeper/arc
 In your web page:
 
 ```html
-<link rel="stylesheet" href="theme/jquery.minesweeper.css" />
-<script src="jquery.js"></script>
-<script src="lib/jquery.timers-1.2.js" ></script>
-<script src="src/jquery.minesweeper.js" ></script>
-<script src="jquery-minesweeper.js"></script>
+<link rel="stylesheet" href="styles/jquery.minesweeper.css" />
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="lib/jquery.timers.js" ></script>
+<script src="scripts/jquery.minesweeper.min.js" ></script>
 <script>
   jQuery(function ($) {
     $("#minesweeper1").minesweeper();
@@ -25,6 +24,9 @@ In your web page:
 ...
 <div id="minesweeper1"></div>
 ```
+
+## Dependency
+It uses jQuery(>=1.4.4) and [jquery.timers](https://github.com/patryk/jquery.timers)(>=1.2)
 
 ## License
 
