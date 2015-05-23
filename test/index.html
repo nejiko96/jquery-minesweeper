@@ -3,13 +3,14 @@
 <head>
   <meta charset="utf-8" />
   <title>jQuery minesweeper plugin</title>
-  <link rel="stylesheet" href="styles/jquery.minesweeper.css" />
-  <script src="bower_components/jquery/dist/jquery.min.js" ></script>
-  <script src="lib/jquery.timers.js" ></script>
-  <script src="scripts/jquery.minesweeper.min.js" ></script>
+  <link rel="stylesheet" href="../styles/jquery.minesweeper.css" />
+  <script src="../bower_components/jquery/dist/jquery.min.js" ></script>
+  <script src="../lib/jquery.timers.js" ></script>
+  <script src="../scripts/jquery.minesweeper.min.js" ></script>
   <!-- localization -->
-  <script src="scripts/i18n/jquery.minesweeper-ja.js" ></script>
+  <script src="../scripts/i18n/jquery.minesweeper-ja.js" ></script>
   <script>
+  'use strict';
   $(function() {
   
     // for debugging on old browser 
@@ -20,17 +21,17 @@
       };
     }
     
-    $("#minesweeper1").minesweeper();
-    $("#minesweeper2").minesweeper({level: "easy"});
-    $("#minesweeper3").minesweeper({level: "medium"});
-    $("#minesweeper4").minesweeper({level: "hard"});
+    $('#minesweeper1').minesweeper();
+    $('#minesweeper2').minesweeper({level: 'easy'});
+    $('#minesweeper3').minesweeper({level: 'medium'});
+    $('#minesweeper4').minesweeper({level: 'hard'});
 
-    $("#btnCustom").click(function() {
-      $("#minesweeper5").minesweeper({
-        level: "custom",
-        width: $("#txtWidth").val(),
-        height: $("#txtHeight").val(),
-        mines: $("#txtMines").val()
+    $('#btnCustom').click(function() {
+      $('#minesweeper5').minesweeper({
+        level: 'custom',
+        width: $('#txtWidth').val(),
+        height: $('#txtHeight').val(),
+        mines: $('#txtMines').val()
       });
     });
   });

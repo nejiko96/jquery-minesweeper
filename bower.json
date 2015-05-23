@@ -14,13 +14,14 @@
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
-    "bower_components",
     "lib",
     "test",
-    "experiment",
+    "experiment"
   ],
   "dependencies": {
     "jquery": ">=1.4.4"
+  },
+  "devDependencies": {
+    "qunit": "~1.18.0"
   }
 }

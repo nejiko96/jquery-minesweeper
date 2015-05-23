@@ -863,7 +863,7 @@
         });
         
         //隣接する地雷の数と旗の数が一致しなければ、何もしないで抜ける
-        if (flagCount != mineCount) {
+        if (flagCount !== mineCount) {
           return;
         }
 
@@ -1068,7 +1068,7 @@
 
   // バージョン情報・初期設定
   $.minesweeper = {};
-  $.minesweeper.version = "@VERSION";
+  $.minesweeper.version = "1.4.0";
   $.minesweeper.defaults =
   {
     level: 'easy'

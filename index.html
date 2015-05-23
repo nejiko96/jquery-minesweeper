@@ -10,18 +10,19 @@
   <!-- localization -->
   <!-- <script src="scripts/i18n/jquery.minesweeper-ja.js" ></script>  -->
   <script>
+  'use strict';
   $(function() {
-    $("#minesweeper1").minesweeper();
-    $("#minesweeper2").minesweeper({level: "easy"});
-    $("#minesweeper3").minesweeper({level: "medium"});
-    $("#minesweeper4").minesweeper({level: "hard"});
+    $('#minesweeper1').minesweeper();
+    $('#minesweeper2').minesweeper({level: 'easy'});
+    $('#minesweeper3').minesweeper({level: 'medium'});
+    $('#minesweeper4').minesweeper({level: 'hard'});
 
-    $("#btnCustom").click(function() {
-      $("#minesweeper5").minesweeper({
-        level: "custom",
-        width: $("#txtWidth").val(),
-        height: $("#txtHeight").val(),
-        mines: $("#txtMines").val()
+    $('#btnCustom').click(function() {
+      $('#minesweeper5').minesweeper({
+        level: 'custom',
+        width: $('#txtWidth').val(),
+        height: $('#txtHeight').val(),
+        mines: $('#txtMines').val()
       });
     });
   });

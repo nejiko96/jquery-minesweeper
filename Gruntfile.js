@@ -27,7 +27,7 @@ module.exports = function (grunt) {
         stripBanners: true
       },
       dist: {
-        src: ['scripts/<%= pkg.name %>.js'],
+        src: 'scripts/<%= pkg.name %>.js',
         dest: '.tmp/<%= pkg.name %>.js'
       }
     },
@@ -66,9 +66,12 @@ module.exports = function (grunt) {
       },
       src: {
         options: {
-          jshintrc: 'src/.jshintrc'
+          jshintrc: 'scripts/.jshintrc'
         },
-        src: ['src/**/*.js']
+        src: [
+          'scripts/**/*.js',
+          '!scripts/**/*.min.js',
+        ]
       },
       test: {
         options: {
@@ -78,6 +81,25 @@ module.exports = function (grunt) {
       }
     },
     watch: {
+      livereload: {
+        options: {
+          livereload: true
+        },
+        files: [
+          'index.html',
+          'test/index.html',
+          'scripts/**/*.min.js',
+          'styles/**/*.css'
+        ]
+      },
+      scripts: {
+        files: 'scripts/<%= pkg.name %>.js',
+        tasks: ['concat', 'uglify']
+      },
+      styles: {
+        files: 'styles/<%= pkg.name %>.scss',
+        tasks: ['sass']
+      },
       gruntfile: {
         files: '<%= jshint.gruntfile.src %>',
         tasks: ['jshint:gruntfile']
@@ -96,19 +118,19 @@ module.exports = function (grunt) {
         options: {
           hostname: 'localhost',
           port: 9000,
-          base: '.'
+          base: '.',
+          open: true
         }
       }
     }
   });
 
   // Default task.
-  // grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean', 'concat', 'uglify']);
-  grunt.registerTask('default', ['clean', 'concat', 'uglify', 'sass']);
+  grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean', 'concat', 'uglify']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
   });
-  grunt.registerTask('serve', ['connect', 'watch']);
+  grunt.registerTask('serve', ['connect:livereload', 'watch']);
   grunt.registerTask('test', ['jshint', 'connect', 'qunit']);
 };
