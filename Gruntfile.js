@@ -127,24 +127,16 @@ module.exports = function (grunt) {
       options: {
         commit: false,
         createTag: false,
-        push: false
-      },
-      pkg: {
-        options: {
-          files: ['package.json', 'bower.json']
-        }
-      },
-      srcHeader: {
-        options: {
-          files: ['scripts/jquery.minesweeper.js'],
-          regExp: '(Version: )(\\d+\\.\\d+\\.\\d+)'
-        }
-      },
-      pluginVer: {
-        options: {
-          files: ['scripts/jquery.minesweeper.js'],
-          regExp: '(version = \")(\\d+\\.\\d+\\.\\d+)(\")'
-        }
+        push: false,
+        files: [
+          'package.json',
+          'bower.json',
+          'scripts/jquery.minesweeper.js'
+        ],
+        regExp: new RegExp(
+          '([\'|\"]?version[\'|\"]?[ ]*[:=][ ]*[\'|\"]?)(\\d+\\.\\d+\\.\\d+(-rc\\.\\d+)?(-\\d+)?)[\\d||A-a|.|-]*([\'|\"]?)',
+          'gi'
+        )
       }
     }
   });
