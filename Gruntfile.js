@@ -126,8 +126,15 @@ module.exports = function (grunt) {
     bump: {
       options: {
         commit: true,
+        commitFiles: [
+          'package.json',
+          'bower.json',
+          'scripts/jquery.minesweeper.js',
+          'scripts/jquery.minesweeper.min.js'
+        ],
         createTag: true,
         push: true,
+        pushTo: 'origin',
         files: [
           'package.json',
           'bower.json',
