@@ -125,9 +125,9 @@ module.exports = function (grunt) {
     },
     bump: {
       options: {
-        commit: false,
-        createTag: false,
-        push: false,
+        commit: true,
+        createTag: true,
+        push: true,
         files: [
           'package.json',
           'bower.json',
