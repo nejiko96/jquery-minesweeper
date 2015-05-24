@@ -83,7 +83,7 @@ module.exports = function (grunt) {
     watch: {
       livereload: {
         options: {
-          livereload: true
+          livereload: '<%= connect.options.livereload %>'
         },
         files: [
           'index.html',
@@ -114,13 +114,14 @@ module.exports = function (grunt) {
       }
     },
     connect: {
+      options: {
+        hostname: 'localhost',
+        port: 9000,
+        open: true,
+        livereload: 35729
+      },
       livereload: {
-        options: {
-          hostname: 'localhost',
-          port: 9000,
-          base: '.',
-          open: true
-        }
+        base: '.'
       }
     },
     bump: {
