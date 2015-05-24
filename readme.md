@@ -25,8 +25,35 @@ In your web page:
 <div id="minesweeper1"></div>
 ```
 
+## Install via Bower
+
+```
+bower install jquery-minesweeper --save
+```
+
+```html
+<link rel="stylesheet" href="bower_components/jquery-minesweeper/styles/jquery.minesweeper.css">
+<script src="bower_components/jquery-minesweeper/scripts/jquery.minesweeper.min.js"></script>
+<script>
+  jQuery(function ($) {
+    $("#minesweeper1").minesweeper();
+  });
+</script>
+...
+<div id="minesweeper1"></div>
+```
+
+
+## localization
+
+```html
+<script src="scripts/i18n/jquery.minesweeper-ja.js" ></script>
+```
+
+
+
 ## Dependency
-It uses jQuery(>=1.4.4) and [jquery.timers](https://github.com/patryk/jquery.timers)(>=1.2)
+It uses jQuery(>=1.4.4) and [jquery.timers](https://github.com/patryk/jquery.timers)(>=1.2)(optional)
 
 ## License
 
