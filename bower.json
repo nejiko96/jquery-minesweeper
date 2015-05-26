@@ -6,7 +6,12 @@
     "nejiko96 <nejiko2006@gmail.com>"
   ],
   "description": "jquery minesweeper plugin",
-  "main": "scripts/jquery.minesweeper.js",
+  "main": [
+    "scripts/jquery.minesweeper.js",
+    "scripts/i18n/jquery.minesweeper-ja.js",
+    "styles/jquery.minesweeper*.scss",
+    "images/*.png"
+  ],
   "keywords": [
     "jQuery",
     "minesweeper"

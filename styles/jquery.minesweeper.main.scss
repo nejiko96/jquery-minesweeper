@@ -1,0 +1,42 @@
+$ms-shift1: -$ms-cell-size;
+$ms-shift2: $ms-shift1 * 2;
+$ms-shift3: $ms-shift1 * 3;
+$ms-shift4: $ms-shift1 * 4;
+
+.minesweeper-mines,
+.minesweeper-timer {
+  background-color: $ms-text-background;
+  border: 1px solid $ms-text-border;
+  display: inline-block;
+  padding-right: 2px;
+  text-align: right;
+  width: 40px;
+}
+
+.minesweeper-cells {
+  line-height: 0;
+
+  span {
+    background-image: url($ms-background-img);
+    display: inline-block;
+    height: $ms-cell-size;
+    overflow: hidden;
+    width: $ms-cell-size;
+  }
+}
+
+.minesweeper-state01 { background-position: 0 0; }
+.minesweeper-state0f { background-position: $ms-shift1 0; }
+.minesweeper-state0h { background-position: $ms-shift2 0; }
+.minesweeper-state10 { background-position: 0 $ms-shift1; }
+.minesweeper-state11 { background-position: $ms-shift1 $ms-shift1; }
+.minesweeper-state12 { background-position: $ms-shift2 $ms-shift1; }
+.minesweeper-state13 { background-position: 0 $ms-shift2; }
+.minesweeper-state14 { background-position: $ms-shift1 $ms-shift2; }
+.minesweeper-state15 { background-position: $ms-shift2 $ms-shift2; }
+.minesweeper-state16 { background-position: 0 $ms-shift3; }
+.minesweeper-state17 { background-position: $ms-shift1 $ms-shift3; }
+.minesweeper-state18 { background-position: $ms-shift2 -$ms-shift3; }
+.minesweeper-state19 { background-position: 0 $ms-shift4; }
+.minesweeper-state1a { background-position: $ms-shift1 $ms-shift4; }
+.minesweeper-state1b { background-position: $ms-shift2 $ms-shift4; }
