@@ -97,7 +97,7 @@ module.exports = function (grunt) {
         tasks: ['concat', 'uglify']
       },
       styles: {
-        files: 'styles/<%= pkg.name %>*.scss',
+        files: 'styles/<%= pkg.name %>.scss',
         tasks: ['sass']
       },
       gruntfile: {
@@ -150,7 +150,7 @@ module.exports = function (grunt) {
   });
 
   // Default task.
-  grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean', 'concat', 'uglify', 'sass']);
+  grunt.registerTask('default', ['jshint', 'sass', 'connect', 'qunit', 'clean', 'concat', 'uglify']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);

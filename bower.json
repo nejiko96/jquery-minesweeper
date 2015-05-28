@@ -7,10 +7,8 @@
   ],
   "description": "jquery minesweeper plugin",
   "main": [
-    "scripts/jquery.minesweeper.js",
-    "scripts/i18n/jquery.minesweeper-ja.js",
-    "styles/jquery.minesweeper*.scss",
-    "images/*.png"
+    "./scripts/jquery.minesweeper.js",
+    "./styles/jquery.minesweeper.scss",
   ],
   "keywords": [
     "jQuery",
