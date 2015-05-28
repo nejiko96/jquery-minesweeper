@@ -8,7 +8,7 @@
   "description": "jquery minesweeper plugin",
   "main": [
     "./scripts/jquery.minesweeper.js",
-    "./styles/jquery.minesweeper.scss",
+    "./styles/jquery.minesweeper.scss"
   ],
   "keywords": [
     "jQuery",
