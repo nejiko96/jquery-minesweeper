@@ -45,7 +45,7 @@ bower install jquery-minesweeper --save
 
 ## On Ruby on Rails
 
--In your Gemfile, add the 'rails-assets-jquery-minesweeper' gem:
+* In your Gemfile, add the 'rails-assets-jquery-minesweeper' gem:
 
 ```ruby
 source 'https://rails-assets.org' do
@@ -53,15 +53,15 @@ source 'https://rails-assets.org' do
 end
 ```
 
--run 'bundle install' command
+* run 'bundle install' command
 
--In 'app/assets/stylesheets/application.css':
+* In 'app/assets/stylesheets/application.css':
 
 ```css
 *= require jquery-minesweeper
 ```
 
--In 'app/assets/javascripts/application.js':
+* In 'app/assets/javascripts/application.js':
 
 ```js
 //= require jquery-minesweeper
