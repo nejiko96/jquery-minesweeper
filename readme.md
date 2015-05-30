@@ -43,14 +43,35 @@ bower install jquery-minesweeper --save
 <div id="minesweeper1"></div>
 ```
 
+## On Ruby on Rails
+
+-In your Gemfile, add the 'rails-assets-jquery-minesweeper' gem:
+
+```ruby
+source 'https://rails-assets.org' do
+  gem 'rails-assets-jquery-minesweeper'
+end
+```
+
+-run 'bundle install' command
+
+-In 'app/assets/stylesheets/application.css':
+
+```css
+*= require jquery-minesweeper
+```
+
+-In 'app/assets/javascripts/application.js':
+
+```js
+//= require jquery-minesweeper
+```
 
 ## localization
 
 ```html
 <script src="scripts/i18n/jquery.minesweeper-ja.js" ></script>
 ```
-
-
 
 ## Dependency
 It uses jQuery(>=1.4.4) and [jquery.timers](https://github.com/patryk/jquery.timers)(>=1.2)(optional)
