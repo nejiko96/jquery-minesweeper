@@ -1,5 +1,5 @@
 $ms-cell-size: 32px !default;
-$ms-background-img: '../images/green_32x32.png' !default;
+$ms-background-img: url('../images/green_32x32.png') !default;
 $ms-text-background: #f5f5f5 !default;
 $ms-text-border: #d3d3d3 !default;
 
@@ -22,7 +22,7 @@ $ms-shift4: $ms-shift1 * 4;
   line-height: 0;
 
   span {
-    background-image: url($ms-background-img);
+    background-image: $ms-background-img;
     display: inline-block;
     height: $ms-cell-size;
     overflow: hidden;
